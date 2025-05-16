@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mercenaryhub/presentation/pages/intro/intro_type_page.dart';
 import 'package:mercenaryhub/presentation/pages/intro/widgets/text_label.dart';
 
 class IntroLevelPage extends StatefulWidget {
@@ -13,7 +14,11 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -24,7 +29,62 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
             getLevelBox('amateur', '아마추어 - 기본기는 어느 정도 있는 상태예요.'),
             getLevelBox('semipro', '세미프로 - 실전 경험이 있고 대회에 많이 나가 봤어요.'),
             getLevelBox('pro', '프로 - 프로선수 경험이 있어요'),
+            Spacer(),
+            getSubmitButton(),
           ],
+        ),
+      ),
+    );
+  }
+
+  SizedBox getSubmitButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          if (level == null) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('알림'),
+                  content: Text('풋살 실력을 선택해 주세요!'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return IntroTypePage(level!);
+                },
+              ),
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF2BBB7D),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // 원하는 borderRadius 값
+          ),
+          padding: EdgeInsets.symmetric(vertical: 16),
+        ),
+        child: Text(
+          '계속하기',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
