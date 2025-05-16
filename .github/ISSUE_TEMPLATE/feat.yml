@@ -1,0 +1,28 @@
+name: ✨ Feature (feat)
+description: 새로운 기능을 추가하는 작업
+title: "[화면단위] 제목 작성"
+labels: ["feat"]
+body:
+  - type: markdown
+    attributes:
+      value: "🚀 **개요**"
+  - type: textarea
+    id: summary
+    attributes:
+      label: 어떤 기능을 추가하나요?
+      placeholder: 예) HomeView View 구성
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "🔍 **작업 상세 내용**"
+  - type: textarea
+    id: details
+    attributes:
+      label: 작업에 포함될 세부 항목
+      placeholder: |
+        - 어떤 파일을 수정할지
+        - 어느 위젯인지 등
+    validations:
+      required: false

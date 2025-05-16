@@ -1,0 +1,25 @@
+name: 🐛 Fix (fix)
+description: 기존 코드의 오류를 수정하는 작업
+title: "[Fix] 제목 작성"
+labels: ["fix"]
+body:
+  - type: markdown
+    attributes:
+      value: "🐞 **버그 요약**"
+  - type: textarea
+    id: summary
+    attributes:
+      label: 어떤 문제가 있었나요?
+      placeholder: 예) 버튼 클릭 시 화면이 넘어가지 않음
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "🛠 **수정 내용**"
+  - type: textarea
+    id: fix
+    attributes:
+      label: 어떻게 고쳤나요?
+    validations:
+      required: false

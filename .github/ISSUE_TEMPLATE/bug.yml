@@ -1,0 +1,38 @@
+name: ❗ Bug Report (bug)
+description: 발견한 버그를 보고합니다.
+title: "[BUG] 버그 제목"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "🐛 **버그 개요**"
+  - type: textarea
+    id: bug-summary
+    attributes:
+      label: 어떤 문제가 발생했나요?
+      placeholder: 예) 앱이 실행되지 않음
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "⚙️ **재현 방법**"
+  - type: textarea
+    id: steps
+    attributes:
+      label: 어떻게 재현할 수 있나요?
+      placeholder: |
+        1. 홈 화면에서 버튼 클릭
+        2. ...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: "📸 **스크린샷 (선택)**"
+  - type: input
+    id: screenshot
+    attributes:
+      label: 이미지 URL (선택)
+    validations:
+      required: false
