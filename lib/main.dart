@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Pretendard'), //앱 기본 폰트 변경
-      home: SplashView()
+      home: SplashView(),
     );
   }
 }
