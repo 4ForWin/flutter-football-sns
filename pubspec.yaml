@@ -1,14 +1,15 @@
 name: mercenaryhub
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: 3.29.3
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
