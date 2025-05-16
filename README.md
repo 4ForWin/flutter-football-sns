@@ -1,1 +1,3 @@
-# flutter-football-sns
+# mercenaryhub
+
+A new Flutter project.
