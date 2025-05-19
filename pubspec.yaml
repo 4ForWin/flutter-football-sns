@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: 3.29.3
+  sdk: ">=3.0.0 < 4.0.0"
 
 dependencies:
   flutter:
@@ -17,3 +17,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Pretendard-Bold.otf
+          weight: 700
+        - asset: assets/fonts/Pretendard-Block.otf
+          weight: 800
