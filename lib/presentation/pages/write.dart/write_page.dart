@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WritePage extends StatefulWidget {
   const WritePage({super.key});
@@ -14,7 +16,7 @@ class _WritePageState extends State<WritePage> {
   final contentTextController = TextEditingController(text: '');
   final imagePathTextController = TextEditingController();
   bool isVisible = false;
-  String? imageUrl;
+  File? imageUrl;
 
   @override
   void dispose() {
@@ -140,7 +142,7 @@ class _WritePageState extends State<WritePage> {
                         )
                       : SizedBox(
                           height: 100,
-                          child: Image.network(
+                          child: Image.file(
                             imageUrl!,
                             fit: BoxFit.cover,
                           ),
@@ -202,10 +204,21 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       print('이미지 선택');
                       setState(() {
                         isVisible = false;
+                      });
+
+                      final imagePicker = ImagePicker();
+                      XFile? xfile = await imagePicker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+
+                      setState(() {
+                        if (xfile != null) {
+                          imageUrl = File(xfile.path);
+                        }
                       });
                     },
                     child: Container(
