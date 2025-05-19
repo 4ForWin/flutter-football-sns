@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mercenaryhub/presentation/view/splash/splash_view.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,11 +10,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello Worlsss22d!!f!'),
-        ),
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'Pretendard'), //앱 기본 폰트 변경
+      home: const Scaffold(
+        body: Center(child: SplashView()),
       ),
     );
   }
