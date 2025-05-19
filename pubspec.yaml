@@ -23,6 +23,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/images/
 
   fonts:
     - family: Pretendard
@@ -33,6 +34,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/Pretendard-Bold.otf
           weight: 700
-        - asset: assets/fonts/Pretendard-Block.otf
+        - asset: assets/fonts/Pretendard-Black.otf
           weight: 800
 

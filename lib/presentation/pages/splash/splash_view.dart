@@ -14,26 +14,29 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     super.initState();
 
-    //3초후에 다음 화면으로 이동
+    // 3초 후에 다음 화면으로 이동
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const LoginView()));
+        context,
+        MaterialPageRoute(builder: (context) => const LoginView()),
+      );
     });
   }
 
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: const Color.fromRGBO(158, 215, 193, 1),
-        body: Center(
-            child: Text(
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(158, 215, 193, 1),
+      body: const Center(
+        child: Text(
           '용병모아',
           style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w800,
-              fontSize: 32,
-              color: Colors.white),
-        )),
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w800,
+            fontSize: 32,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
