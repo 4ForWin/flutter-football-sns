@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mercenaryhub/presentation/view/login/login_view.dart';
+import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
