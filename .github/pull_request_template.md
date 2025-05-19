@@ -14,5 +14,5 @@
 <!-- 실행 결과를 이미지, GIF 등으로 첨부해주세요. -->
 
 <!-- 예시
-![image](https://example.com/image.png)
+<img width="300" src="https://github.com/user-attachments/assets/5cc59b1a-c6c4-4dd0-ae5c-a8d4d7159e72" />
 -->
