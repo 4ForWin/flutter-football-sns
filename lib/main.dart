@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
+import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/setting/policy_page.dart';
+import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 
 void main() {
-  runApp(ProviderScope(child: const MainApp()));
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -14,5 +19,13 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'Pretendard'), //앱 기본 폰트 변경
         home: SplashView());
+      routes: {
+        '/setting': (context) => const SettingPage(),
+        '/alarm_setting': (context) => const AlarmSettingPage(),
+        // '/apply_history': (context) => const ApplyHistoryPage(), // 필요 시 추가
+        '/policy': (context) => const PolicyPage(),
+        '/login': (context) => const LoginView(),
+      },
+    );
   }
 }
