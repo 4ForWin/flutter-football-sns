@@ -12,6 +12,7 @@ dependencies:
   firebase_storage: ^12.4.5
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.2.1
   flutter_riverpod: ^2.6.1
   flutter_svg: ^2.1.0
   geolocator: ^14.0.0
@@ -31,6 +32,7 @@ flutter:
     - assets/
     - assets/icons/
     - assets/images/
+    - .env
 
   fonts:
     - family: Pretendard
