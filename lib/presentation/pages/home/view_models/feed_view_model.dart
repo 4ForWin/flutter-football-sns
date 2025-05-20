@@ -1,19 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mercenaryhub/domain/entity/feed.dart';
+import 'package:mercenaryhub/presentation/pages/providers.dart';
 
-class FeedViewModel extends Notifier<List<int>?> {
+class FeedViewModel extends Notifier<List<Feed>> {
   @override
-  List<int>? build() {
-    return null;
+  build() {
+    print('이거?');
+    fetchFeeds();
+    return [];
   }
 
-  void fetchFeeds(List<int> beforState) {
-    print('헐!!! $beforState');
-    print([...List.generate(10, (index) => 0 - index), ...beforState]);
-    state = [...List.generate(10, (index) => 0 - index), ...beforState];
+  void fetchFeeds() async {
+    print('이거?2222222');
+    final fetchFeedsUsecase = ref.read(fetchFeedsUsecaseProvider);
+    print('이거?✅');
+    state = await fetchFeedsUsecase.execute();
   }
 }
 
-final feedViewModelProvider = NotifierProvider<FeedViewModel, List<int>?>(
+final feedViewModelProvider = NotifierProvider<FeedViewModel, List<Feed>>(
   () {
     return FeedViewModel();
   },
