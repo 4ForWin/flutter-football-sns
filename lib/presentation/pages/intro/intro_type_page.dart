@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mercenaryhub/presentation/pages/intro/widgets/progress_bar.dart';
 import 'package:mercenaryhub/presentation/pages/intro/widgets/text_label.dart';
 
 class IntroTypePage extends StatefulWidget {
@@ -23,8 +25,11 @@ class _IntroTypePageState extends State<IntroTypePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ProgressBar(1.0),
             TextLabel(text: '원하는 모집 분야를 선택해 주세요.', type: 'question'),
             SizedBox(height: 16),
+            getTypeBox('recruitingPlayer'),
+            getTypeBox('findingTeam'),
             Spacer(),
             getSubmitButton(),
           ],
@@ -33,7 +38,13 @@ class _IntroTypePageState extends State<IntroTypePage> {
     );
   }
 
-  GestureDetector getLevelBox(String chosenType, String text) {
+  GestureDetector getTypeBox(String chosenType) {
+    String title = '용병을 모집하고 싶어요.';
+    String content = '풋살을 하고 싶은 용병을 모집';
+    if (chosenType == 'findingTeam') {
+      title = '운동할 수 있는 팀을 찾고 싶어요';
+      content = '참가하고 싶은 팀을 자유롭게 선택';
+    }
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -53,7 +64,25 @@ class _IntroTypePageState extends State<IntroTypePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextLabel(text: text, type: 'body'),
+            Row(
+              children: [
+                SvgPicture.asset(
+                  chosenType == 'recruitingPlayer'
+                      ? 'assets/images/recruiting_player.svg'
+                      : 'assets/images/finding_team.svg',
+                ),
+                SizedBox(
+                  width: 16,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextLabel(text: title, type: 'title'),
+                    TextLabel(text: content, type: 'body'),
+                  ],
+                ),
+              ],
+            ),
             Icon(
               Icons.check_circle,
               color: type == chosenType ? Color(0xFF2BBB7D) : Colors.white,
@@ -68,7 +97,31 @@ class _IntroTypePageState extends State<IntroTypePage> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          if (type == null) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('알림'),
+                  content: Text('모집 유형을 선택해 주세요!'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (type == 'recruitingPlayer') {
+            // 용병찾기 페이지로 이동
+          } else {
+            // 팀 찾기 페이지로 이동
+          }
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFF2BBB7D),
           shape: RoundedRectangleBorder(

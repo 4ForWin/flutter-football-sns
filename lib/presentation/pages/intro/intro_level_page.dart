@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/presentation/pages/intro/intro_type_page.dart';
+import 'package:mercenaryhub/presentation/pages/intro/view_models/intro_level_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/intro/widgets/progress_bar.dart';
 import 'package:mercenaryhub/presentation/pages/intro/widgets/text_label.dart';
 
-class IntroLevelPage extends StatefulWidget {
+class IntroLevelPage extends ConsumerWidget {
   @override
-  State<IntroLevelPage> createState() => _IntroLevelPageState();
-}
-
-class _IntroLevelPageState extends State<IntroLevelPage> {
-  String? level;
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -22,27 +19,29 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ProgressBar(0.5),
             TextLabel(text: '당신의 풋살 실력은 어느 정도인가요?', type: 'question'),
             SizedBox(height: 16),
-            getLevelBox('rookie', '루키 - 아직 내 실력을 모르겠어요.'),
-            getLevelBox('beginner', '비기너 - 풋살과 친해지는 중이에요'),
-            getLevelBox('amateur', '아마추어 - 기본기는 어느 정도 있는 상태예요.'),
-            getLevelBox('semipro', '세미프로 - 실전 경험이 있고 대회에 많이 나가 봤어요.'),
-            getLevelBox('pro', '프로 - 프로선수 경험이 있어요'),
+            getLevelBox(ref, 'rookie', '루키 - 아직 내 실력을 모르겠어요.'),
+            getLevelBox(ref, 'beginner', '비기너 - 풋살과 친해지는 중이에요'),
+            getLevelBox(ref, 'amateur', '아마추어 - 기본기는 어느 정도 있는 상태예요.'),
+            getLevelBox(ref, 'semipro', '세미프로 - 실전 경험이 있고 대회에 많이 나가 봤어요.'),
+            getLevelBox(ref, 'pro', '프로 - 프로선수 경험이 있어요'),
             Spacer(),
-            getSubmitButton(),
+            getSubmitButton(ref, context),
           ],
         ),
       ),
     );
   }
 
-  SizedBox getSubmitButton() {
+  SizedBox getSubmitButton(WidgetRef ref, BuildContext context) {
+    IntroLevelState state = ref.watch(introLevelViewModelProvider);
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          if (level == null) {
+          if (state.futsalLevel == null) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -65,7 +64,7 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return IntroTypePage(level!);
+                  return IntroTypePage(state.futsalLevel!);
                 },
               ),
             );
@@ -90,12 +89,11 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
     );
   }
 
-  GestureDetector getLevelBox(String chosenLevel, String text) {
+  GestureDetector getLevelBox(WidgetRef ref, String chosenLevel, String text) {
+    IntroLevelState state = ref.watch(introLevelViewModelProvider);
     return GestureDetector(
       onTap: () {
-        setState(() {
-          level = chosenLevel;
-        });
+        ref.read(introLevelViewModelProvider.notifier).setLevel(chosenLevel);
       },
       child: Container(
         width: double.infinity,
@@ -103,7 +101,9 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
         margin: EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           border: Border.all(
-            color: level == chosenLevel ? Color(0xFF004FFF) : Color(0xFFE8EEF2),
+            color: state.futsalLevel == chosenLevel
+                ? Color(0xFF004FFF)
+                : Color(0xFFE8EEF2),
           ),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -113,7 +113,9 @@ class _IntroLevelPageState extends State<IntroLevelPage> {
             TextLabel(text: text, type: 'body'),
             Icon(
               Icons.check_circle,
-              color: level == chosenLevel ? Color(0xFF2BBB7D) : Colors.white,
+              color: state.futsalLevel == chosenLevel
+                  ? Color(0xFF2BBB7D)
+                  : Colors.white,
             ),
           ],
         ),
