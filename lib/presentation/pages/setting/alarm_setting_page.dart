@@ -25,7 +25,7 @@ class AlarmSettingPage extends ConsumerWidget {
             onChanged: notifier.toggleBacktest,
           ),
           SwitchListTile(
-            title: const Text('토글 추천 알림림'),
+            title: const Text('토글 추천 알림'),
             value: state.isRecommendationOn,
             onChanged: notifier.toggleRecommendation,
           ),
