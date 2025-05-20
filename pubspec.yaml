@@ -7,10 +7,16 @@ environment:
   sdk: ">=3.0.0 < 4.0.0"
 
 dependencies:
+  firebase_auth: ^5.5.3
+  firebase_messaging: ^15.2.5
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.2.1
   flutter_riverpod: ^2.6.1
   flutter_svg: ^2.1.0
+  http: ^1.4.0
+  kakao_flutter_sdk_user: ^1.9.5 # 카카오 로그인 API 패키지
+  shared_preferences: ^2.5.3
 
   cupertino_icons: ^1.0.8
 
@@ -26,6 +32,7 @@ flutter:
     - assets/
     - assets/icons/
     - assets/images/
+    - .env
 
   fonts:
     - family: Pretendard
