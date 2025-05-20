@@ -12,6 +12,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   flutter_svg: ^2.1.0
 
+  cupertino_icons: ^1.0.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -36,4 +38,3 @@ flutter:
           weight: 700
         - asset: assets/fonts/Pretendard-Black.otf
           weight: 800
-

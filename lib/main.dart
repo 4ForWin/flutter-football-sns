@@ -17,8 +17,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Pretendard'),
-      home: const SplashView(),
+        theme: ThemeData(fontFamily: 'Pretendard'), //앱 기본 폰트 변경
+        home: SplashView());
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
