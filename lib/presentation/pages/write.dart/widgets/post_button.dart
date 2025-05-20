@@ -4,6 +4,7 @@ import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
 class PostButton extends StatelessWidget {
+  final BuildContext homeContext;
   final GlobalKey<FormState> formKey;
   final TextEditingController titleTextController;
   final TextEditingController contentTextController;
@@ -12,6 +13,7 @@ class PostButton extends StatelessWidget {
 
   const PostButton({
     super.key,
+    required this.homeContext,
     required this.formKey,
     required this.titleTextController,
     required this.contentTextController,
@@ -27,25 +29,45 @@ class PostButton extends StatelessWidget {
 
         return GestureDetector(
           onTap: () async {
-            print('게시하기');
-            final result = formKey.currentState!.validate();
-            if (result) {
-              print('ye');
-              loadingOverlay.show(context);
-              await writeVm.uploadImage();
-              bool isComplte = await writeVm.insertFeed(
-                title: titleTextController.text,
-                content: contentTextController.text,
-                teamName: teamTextController.text,
-              );
-              if (isComplte) {
-                print('✅ 게시 완료');
-                loadingOverlay.hide();
+            try {
+              print('게시하기 버튼 터치');
+              final result = formKey.currentState!.validate();
+
+              if (result) {
+                print('유효성 검사 완료');
+                loadingOverlay.show(context);
+                await writeVm.uploadImage();
+                bool isComplte = await writeVm.insertFeed(
+                  title: titleTextController.text,
+                  content: contentTextController.text,
+                  teamName: teamTextController.text,
+                );
+                if (isComplte) {
+                  print('✅ 게시 완료');
+                  loadingOverlay.hide();
+                  Navigator.pop(context);
+
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(homeContext)
+                        .showSnackBar(SnackBar(content: Text('게시글을 등록하였습니다.')));
+                  }
+                } else {
+                  print('✅ 게시 실패');
+                  loadingOverlay.hide();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(homeContext).showSnackBar(
+                        SnackBar(content: Text('게시글 등록에 실패했습니다. 다시 시도해주세요.')));
+                  }
+                }
               } else {
-                print('✅ 게시 실패......');
+                print('유효성 검사 실패');
               }
-            } else {
-              print('놉');
+            } catch (e) {
+              loadingOverlay.hide();
+              if (context.mounted) {
+                ScaffoldMessenger.of(homeContext).showSnackBar(
+                    SnackBar(content: Text('게시글 등록에 실패했습니다. 다시 시도해주세요.')));
+              }
             }
           },
           child: Text(

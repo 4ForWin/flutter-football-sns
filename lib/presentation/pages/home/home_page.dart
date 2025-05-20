@@ -38,8 +38,13 @@ class HomePage extends StatelessWidget {
             IconButton(
               onPressed: () {
                 print('게시글 버튼');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => WritePage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WritePage(
+                              // HomePage class의 build 메서드의 context
+                              homeContext: context,
+                            )));
               },
               icon: Icon(
                 Icons.create_outlined,

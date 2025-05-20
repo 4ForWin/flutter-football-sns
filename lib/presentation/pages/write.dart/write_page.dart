@@ -11,7 +11,11 @@ import 'package:mercenaryhub/presentation/pages/write.dart/widgets/team_text_for
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/title_text_form_field.dart';
 
 class WritePage extends ConsumerStatefulWidget {
-  const WritePage({super.key});
+  final BuildContext homeContext;
+  const WritePage({
+    super.key,
+    required this.homeContext,
+  });
 
   @override
   ConsumerState<WritePage> createState() => _WritePageState();
@@ -58,6 +62,7 @@ class _WritePageState extends ConsumerState<WritePage> {
                   contentTextController: contentTextController,
                   teamTextController: teamTextController,
                   loadingOverlay: loadingOverlay,
+                  homeContext: widget.homeContext,
                 ),
               ],
               actionsPadding: EdgeInsets.only(right: 20)),
