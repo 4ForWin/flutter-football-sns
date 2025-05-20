@@ -56,8 +56,8 @@ class _WritePageState extends ConsumerState<WritePage> {
                       await writeVm.uploadImage();
                       bool isComplte = await writeVm.insertFeed(
                         title: titleTextController.text,
-                        content: teamTextController.text,
-                        teamName: contentTextController.text,
+                        content: contentTextController.text,
+                        teamName: teamTextController.text,
                       );
                       if (isComplte) {
                         print('✅ 게시 완료');
@@ -109,7 +109,8 @@ class _WritePageState extends ConsumerState<WritePage> {
                     GestureDetector(
                       onTap: () async {
                         print('위치 아이콘');
-                        locationTextController.text = writeVm.setLocation();
+                        locationTextController.text =
+                            await writeVm.getLocation();
                         await Future.delayed(Duration(milliseconds: 10));
                         writeVm.changeIsLocationFieldEnable(false);
                       },

@@ -59,9 +59,11 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
     state = state.copyWith(imageFile: xfile);
   }
 
-  String setLocation() {
-    state = state.copyWith(location: '서울 강남구');
-    return '서울 강남구';
+  Future<String> getLocation() async {
+    final getlocationUsecase = ref.read(getLocationUsecaseProvider);
+    String location = await getlocationUsecase.execute();
+    state = state.copyWith(location: location);
+    return location;
   }
 
   Future<String> uploadImage() async {
