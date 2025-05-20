@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/feed_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/state_icons.dart';
 
 class TeamSarchTab extends StatelessWidget {
@@ -9,13 +10,18 @@ class TeamSarchTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pageViewController = PageController(initialPage: feeds.length ~/ 2);
+    // final pageViewController = PageController(initialPage: feeds.length ~/ 2);
+    final pageViewController = PageController(initialPage: 0);
 
     return Consumer(
       builder: (context, ref, child) {
+        final feedList = ref.watch(feedViewModelProvider);
+        print('컨슈머 ✅');
+        // print(feedList.first.imageUrl);
+        print('✅ 컨슈머 ✅');
         return PageView.builder(
           controller: pageViewController,
-          itemCount: feeds.length,
+          itemCount: feedList.length,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -24,7 +30,7 @@ class TeamSarchTab extends StatelessWidget {
                   height: double.infinity,
                   color: Color(0xff2B2B2B),
                   child: Image.network(
-                    'https://picsum.photos/200/300',
+                    feedList[index].imageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -43,7 +49,7 @@ class TeamSarchTab extends StatelessWidget {
                           flex: 20,
                         ),
                         Text(
-                          '구단명',
+                          feedList[index].teamName,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -54,7 +60,7 @@ class TeamSarchTab extends StatelessWidget {
                           flex: 4,
                         ),
                         Text(
-                          '5월 20일 풋살 인원 1명 급하게 모집합니다.' * 10,
+                          feedList[index].content,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -78,7 +84,7 @@ class TeamSarchTab extends StatelessWidget {
                               color: Colors.white,
                             ),
                             Text(
-                              '서울특별시 강남구',
+                              feedList[index].location,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

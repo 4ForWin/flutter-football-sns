@@ -1,32 +1,38 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
-class WritePage extends StatefulWidget {
+class WritePage extends ConsumerStatefulWidget {
   const WritePage({super.key});
 
   @override
-  State<WritePage> createState() => _WritePageState();
+  ConsumerState<WritePage> createState() => _WritePageState();
 }
 
-class _WritePageState extends State<WritePage> {
+class _WritePageState extends ConsumerState<WritePage> {
   final formKey = GlobalKey<FormState>();
-  final gpsTextController = TextEditingController(text: '');
+  final locationTextController = TextEditingController(text: '');
   final titleTextController = TextEditingController(text: '');
+  final teamTextController = TextEditingController(text: '');
   final contentTextController = TextEditingController(text: '');
   final imagePathTextController = TextEditingController();
-  bool isVisible = false;
-  String? imageUrl;
 
   @override
   void dispose() {
     super.dispose();
-    gpsTextController.dispose();
+    locationTextController.dispose();
     titleTextController.dispose();
+    teamTextController.dispose();
     contentTextController.dispose();
     imagePathTextController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final writeState = ref.watch(writeViewModelProvider);
+    final writeVm = ref.read(writeViewModelProvider.notifier);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -42,14 +48,24 @@ class _WritePageState extends State<WritePage> {
               ),
               actions: [
                 GestureDetector(
-                  onTap: () {
-                    print('게시 완료');
+                  onTap: () async {
+                    print('게시하기');
                     final result = formKey.currentState!.validate();
                     if (result) {
                       print('ye');
+                      await writeVm.uploadImage();
+                      bool isComplte = await writeVm.insertFeed(
+                        title: titleTextController.text,
+                        content: contentTextController.text,
+                        teamName: teamTextController.text,
+                      );
+                      if (isComplte) {
+                        print('✅ 게시 완료');
+                      } else {
+                        print('✅ 게시 실패......');
+                      }
                     } else {
                       print('놉');
-                      ;
                     }
                   },
                   child: Text(
@@ -70,8 +86,14 @@ class _WritePageState extends State<WritePage> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        enabled: false,
-                        controller: gpsTextController,
+                        enabled: writeState.isLocationFieldEnable,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: (value) {
+                          if (writeState.isLocationFieldEnable) {
+                            locationTextController.text = '';
+                          }
+                        },
+                        controller: locationTextController,
                         decoration: InputDecoration(
                           hintText: '위치를 설정해 주세요',
                         ),
@@ -85,8 +107,12 @@ class _WritePageState extends State<WritePage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         print('위치 아이콘');
+                        locationTextController.text =
+                            await writeVm.getLocation();
+                        await Future.delayed(Duration(milliseconds: 10));
+                        writeVm.changeIsLocationFieldEnable(false);
                       },
                       child: SizedBox(
                         width: 50,
@@ -97,7 +123,20 @@ class _WritePageState extends State<WritePage> {
                   ],
                 ),
                 TextFormField(
+                  controller: teamTextController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(hintText: '팀을 입력해 주세요'),
+                  validator: (value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return '팀을 입력해 주세요';
+                    }
+
+                    return null;
+                  },
+                ),
+                TextFormField(
                   controller: titleTextController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(hintText: '제목을 입력해 주세요'),
                   validator: (value) {
                     if (value?.trim().isEmpty ?? true) {
@@ -114,6 +153,7 @@ class _WritePageState extends State<WritePage> {
                     expands: true,
                     maxLines: null,
                     textInputAction: TextInputAction.newline,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
                       hintText: '시간, 장소 등 자세한 내용을 입력해 주세요',
                     ),
@@ -131,7 +171,7 @@ class _WritePageState extends State<WritePage> {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: imageUrl == null
+                  child: writeState.imageFile == null
                       ? Container(
                           width: 100,
                           height: 100,
@@ -140,8 +180,8 @@ class _WritePageState extends State<WritePage> {
                         )
                       : SizedBox(
                           height: 100,
-                          child: Image.network(
-                            imageUrl!,
+                          child: Image.file(
+                            File(writeState.imageFile!.path),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -168,7 +208,7 @@ class _WritePageState extends State<WritePage> {
                   Positioned(
                     top: -30,
                     child: Visibility(
-                      visible: isVisible,
+                      visible: writeState.isErrorVisible,
                       child: Text(
                         '이미지를 업로드 해주세요',
                         style: TextStyle(
@@ -179,22 +219,20 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                   SizedBox(
+                    // TextFormFiled는 Visibility위젯 사용하면 x
+                    // 사용하면 텍스트관련 인식 안함
                     width: 0,
                     height: 0,
                     child: TextFormField(
                       enabled: false,
                       controller: imagePathTextController,
-                      decoration: InputDecoration(
-                        hintText: '123',
-                      ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value?.trim().isEmpty ?? true) {
-                          setState(() {
-                            isVisible = true;
-                            imagePathTextController.text = '1';
-                          });
+                          // 이미지 업로드 에러 텍스트 보여줌
+                          writeVm.changeIsErrorVisible(true);
 
-                          return '';
+                          return '이미지를 업로드 해주세요!!';
                         }
 
                         return null;
@@ -202,11 +240,24 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       print('이미지 선택');
-                      setState(() {
-                        isVisible = false;
-                      });
+
+                      final imagePicker = ImagePicker();
+                      XFile? xfile = await imagePicker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+
+                      if (xfile != null) {
+                        // 유효성 검사 통과하기 위해
+                        imagePathTextController.text = xfile.path;
+
+                        // 업로드할 이미지 상태에 저장
+                        writeVm.changeImageFile(xfile);
+
+                        // 이미지 업로드 에러 텍스트 숨김
+                        writeVm.changeIsErrorVisible(false);
+                      }
                     },
                     child: Container(
                       width: 50,
