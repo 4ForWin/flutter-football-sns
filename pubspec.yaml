@@ -18,6 +18,8 @@ dependencies:
   kakao_flutter_sdk_user: ^1.9.5 # 카카오 로그인 API 패키지
   shared_preferences: ^2.5.3
 
+  cupertino_icons: ^1.0.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -43,4 +45,3 @@ flutter:
           weight: 700
         - asset: assets/fonts/Pretendard-Black.otf
           weight: 800
-

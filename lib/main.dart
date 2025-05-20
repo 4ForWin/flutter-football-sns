@@ -1,27 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+
+  
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/setting/policy_page.dart';
+import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 
+void main() {
+  runApp(const ProviderScope(child: MainApp()));
 
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
-
-  // Firebase 초기화
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  //kakao Login
-  KakaoSdk.init(
-    nativeAppKey: dotenv.get("KAKAO_NATIVE_KEY"),    
-    javaScriptAppKey: dotenv.get("KAKAO__JAVASCRIPT_KEY"),
-  );
-  runApp(ProviderScope(child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -32,5 +19,13 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'Pretendard'), //앱 기본 폰트 변경
         home: SplashView());
+      routes: {
+        '/setting': (context) => const SettingPage(),
+        '/alarm_setting': (context) => const AlarmSettingPage(),
+        // '/apply_history': (context) => const ApplyHistoryPage(), // 필요 시 추가
+        '/policy': (context) => const PolicyPage(),
+        '/login': (context) => const LoginView(),
+      },
+    );
   }
 }

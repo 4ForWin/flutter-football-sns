@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/home_bottom_navigation_bar.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/home_indexed_stack.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/write_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -37,6 +38,8 @@ class HomePage extends StatelessWidget {
             IconButton(
               onPressed: () {
                 print('게시글 버튼');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => WritePage()));
               },
               icon: Icon(
                 Icons.create_outlined,
