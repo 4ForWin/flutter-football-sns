@@ -18,13 +18,13 @@ class TeamSarchTab extends StatelessWidget {
     return Consumer(
       builder: (context, ref, child) {
         final feedList = ref.watch(feedViewModelProvider);
-        print('컨슈머 ✅');
-        print('✅ 컨슈머 ✅');
+
         return PageView.builder(
           controller: pageViewController,
           itemCount: feedList.length,
           itemBuilder: (context, index) {
             final feed = feedList[index];
+
             return Stack(
               children: [
                 Container(
@@ -60,6 +60,9 @@ class TeamSarchTab extends StatelessWidget {
                           '${NumberFormat('#,###').format(int.parse(feed.cost))}원',
                         ),
                         PostText(DateFormat('yyyy-MM-dd').format(feed.date)),
+                        PostText(
+                          '${DateFormat('HH:mm').format(feed.time.start!)} ~ ${DateFormat('HH:mm').format(feed.time.end!)}',
+                        ),
                         Spacer(flex: 4),
                         const StateIcons(),
                         Spacer(flex: 4),

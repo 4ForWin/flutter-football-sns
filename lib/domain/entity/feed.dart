@@ -1,3 +1,5 @@
+import 'package:mercenaryhub/domain/entity/time_state.dart';
+
 class Feed {
   String id;
   String cost;
@@ -7,6 +9,7 @@ class Feed {
   String location;
   String level;
   DateTime date;
+  TimeState time;
 
   Feed({
     required this.id,
@@ -17,5 +20,6 @@ class Feed {
     required this.location,
     required this.level,
     required this.date,
+    required this.time,
   });
 }

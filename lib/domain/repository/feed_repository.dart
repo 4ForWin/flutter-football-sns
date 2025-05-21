@@ -1,4 +1,5 @@
 import 'package:mercenaryhub/domain/entity/feed.dart';
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 abstract interface class FeedRepository {
   Future<List<Feed>> fetchFeeds();
@@ -10,5 +11,6 @@ abstract interface class FeedRepository {
     required String location,
     required String level,
     required DateTime date,
+    required TimeState time,
   });
 }

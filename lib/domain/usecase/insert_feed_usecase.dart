@@ -1,3 +1,4 @@
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 import 'package:mercenaryhub/domain/repository/feed_repository.dart';
 
 class InsertFeedUsecase {
@@ -13,6 +14,7 @@ class InsertFeedUsecase {
     required String location,
     required String level,
     required DateTime date,
+    required TimeState time,
   }) async {
     return await _feedRepository.insertFeed(
       cost: cost,
@@ -22,6 +24,7 @@ class InsertFeedUsecase {
       location: location,
       level: level,
       date: date,
+      time: time,
     );
   }
 }

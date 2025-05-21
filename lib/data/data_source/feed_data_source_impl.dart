@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mercenaryhub/data/data_source/feed_data_source.dart';
 import 'package:mercenaryhub/data/dto/feed_dto.dart';
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 class FeedDataSourceImpl implements FeedDataSource {
   final FirebaseFirestore _firestoreInstance; // FirebaseFirestore.instance;
@@ -33,6 +34,7 @@ class FeedDataSourceImpl implements FeedDataSource {
     required String location,
     required String level,
     required DateTime date,
+    required TimeState time,
   }) async {
     try {
       final collectionRef = _firestoreInstance.collection('feeds');
@@ -48,6 +50,7 @@ class FeedDataSourceImpl implements FeedDataSource {
         'level': level,
         'date': date
             .toIso8601String(), // 파이어베이스에 추가할때는 타입이 DateTime -> String으로 변경해서 하기
+        'time': time.toJson(), // toJson에서 자동으로 totoIso8601String()를 함
       });
 
       return true;

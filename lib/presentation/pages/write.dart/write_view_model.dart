@@ -2,40 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
-
-class TimeState {
-  DateTime? start;
-  DateTime? end;
-
-  TimeState({
-    this.start,
-    this.end,
-  });
-
-  TimeState copyWith({
-    DateTime? start,
-    DateTime? end,
-  }) {
-    return TimeState(
-      start: start ?? this.start,
-      end: end ?? this.end,
-    );
-  }
-
-  TimeState.fromJson(Map<String, dynamic> json)
-      : this(
-          start: json['start'],
-          end: json['end'],
-        );
-
-  Map<String, dynamic> toJson() {
-    return {
-      'start': start,
-      'end': end,
-    };
-  }
-}
 
 class WriteState {
   bool isErrorVisible;
@@ -173,32 +141,16 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
       selectedTime!.hour,
       selectedTime.minute,
     );
-    print('시간 피커');
-    print(dateAndTime);
-    print('시간 포맷 피커');
-    print(DateFormat('HH:mm').format(dateAndTime));
+
     if (type == 'start') {
       state = state.copyWith(time: state.time.copyWith(start: dateAndTime));
       return DateFormat('HH:mm').format(dateAndTime);
-      // state = state.copyWith(
-      //     time: {...state.time, 'start': dateAndTime.toIso8601String()});
     } else if (type == 'end') {
       state = state.copyWith(time: state.time.copyWith(end: dateAndTime));
       return DateFormat('HH:mm').format(dateAndTime);
-      // state = state.copyWith(
-      //     time: {...state.time, 'end': dateAndTime.toIso8601String()});
     }
 
     return null;
-    // print(DateTime.parse(d.toIso8601String()).hour);
-
-    print('❤️');
-    print(state.time);
-    print(dateAndTime);
-    print(selectedTime);
-    print(selectedTime.hour.toString().padLeft(2, '0'));
-    print(selectedTime.minute.toString().padLeft(2, '0'));
-    print('❤️');
   }
 
   Future<String> getLocation() async {
@@ -227,8 +179,9 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
       cost: cost,
       person: person,
       level: state.level!,
-      imageUrl: state.imageUrl!,
       date: state.date,
+      time: state.time,
+      imageUrl: state.imageUrl!,
     );
 
     return isComplete;

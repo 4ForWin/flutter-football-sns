@@ -1,5 +1,6 @@
 import 'package:mercenaryhub/data/data_source/feed_data_source.dart';
 import 'package:mercenaryhub/domain/entity/feed.dart';
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 import 'package:mercenaryhub/domain/repository/feed_repository.dart';
 
 class FeedRepositoryImpl implements FeedRepository {
@@ -21,6 +22,7 @@ class FeedRepositoryImpl implements FeedRepository {
         location: feedDto.location,
         level: feedDto.level,
         date: DateTime.parse(feedDto.date),
+        time: feedDto.time,
       );
     }).toList();
   }
@@ -34,6 +36,7 @@ class FeedRepositoryImpl implements FeedRepository {
     required String location,
     required String level,
     required DateTime date,
+    required TimeState time,
   }) async {
     bool isComplete = await _feedDataSource.insertFeed(
       cost: cost,
@@ -43,6 +46,7 @@ class FeedRepositoryImpl implements FeedRepository {
       location: location,
       level: level,
       date: date,
+      time: time,
     );
     return isComplete;
   }

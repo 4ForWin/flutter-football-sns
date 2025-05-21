@@ -1,4 +1,5 @@
 import 'package:mercenaryhub/data/dto/feed_dto.dart';
+import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 abstract interface class FeedDataSource {
   /// 피드 다 가져오기
@@ -13,5 +14,6 @@ abstract interface class FeedDataSource {
     required String location,
     required String level,
     required DateTime date,
+    required TimeState time,
   });
 }

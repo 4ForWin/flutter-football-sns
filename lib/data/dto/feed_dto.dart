@@ -1,3 +1,5 @@
+import 'package:mercenaryhub/domain/entity/time_state.dart';
+
 class FeedDto {
   String id;
   String cost;
@@ -8,6 +10,7 @@ class FeedDto {
   String location;
   String level;
   String date;
+  TimeState time;
 
   FeedDto({
     required this.id,
@@ -19,6 +22,7 @@ class FeedDto {
     required this.location,
     required this.level,
     required this.date,
+    required this.time,
   });
 
   FeedDto copyWith({
@@ -31,6 +35,7 @@ class FeedDto {
     String? location,
     String? level,
     String? date,
+    TimeState? time,
   }) =>
       FeedDto(
         id: id ?? this.id,
@@ -42,6 +47,7 @@ class FeedDto {
         location: location ?? this.location,
         level: level ?? this.level,
         date: date ?? this.date,
+        time: time ?? this.time,
       );
 
   factory FeedDto.fromJson(Map<String, dynamic> json) => FeedDto(
@@ -54,6 +60,7 @@ class FeedDto {
         location: json["location"],
         level: json["level"],
         date: json["date"],
+        time: TimeState.fromJson(json["time"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -66,5 +73,6 @@ class FeedDto {
         "location": location,
         "level": level,
         "date": date,
+        "time": time.toJson(),
       };
 }
