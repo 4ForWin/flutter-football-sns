@@ -12,11 +12,24 @@ class TermsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
       child: ElevatedButton(
-        onPressed: (){}, 
-        child: Text('동의')
-      ),
+        onPressed: enabled ? onPressed : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: enabled ? Color(0xff2BBB7D) : Color(0xffE8EEF2),
+          foregroundColor: enabled ? Color(0xffFFFFFF) : Color(0xffA4ADB2),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontFamily: 'Pretendard'
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+          )
+        ), 
+        child: const Text("동의")
+      )
     );
   }
 }
