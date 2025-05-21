@@ -1,17 +1,21 @@
 class Feed {
   String id;
-  String title;
-  String content;
+  String cost;
+  String person;
   String imageUrl;
   String teamName;
   String location;
+  String level;
+  DateTime date;
 
   Feed({
     required this.id,
-    required this.title,
-    required this.content,
+    required this.cost,
+    required this.person,
     required this.imageUrl,
     required this.teamName,
     required this.location,
+    required this.level,
+    required this.date,
   });
 }

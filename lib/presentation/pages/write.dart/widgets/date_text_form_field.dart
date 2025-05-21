@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
-class LocationTextFormField extends StatelessWidget {
+class DateTextFormField extends StatelessWidget {
   final TextEditingController controller;
 
-  const LocationTextFormField({
+  const DateTextFormField({
     super.key,
     required this.controller,
   });
@@ -16,11 +16,11 @@ class LocationTextFormField extends StatelessWidget {
       final writeState = ref.watch(writeViewModelProvider);
       return Expanded(
         child: TextFormField(
-          enabled: writeState.isLocationFieldEnable,
+          enabled: writeState.isDateFieldEnable,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           onChanged: (value) {
-            if (writeState.isLocationFieldEnable) {
+            if (writeState.isDateFieldEnable) {
               controller.text = '';
             }
           },
@@ -28,14 +28,14 @@ class LocationTextFormField extends StatelessWidget {
             color: Color(0xff222222),
           ),
           decoration: InputDecoration(
-            labelText: '지역',
+            labelText: '날짜',
             labelStyle: TextStyle(
               color: Color(0xff222222),
             ),
           ),
           validator: (value) {
             if (value?.trim().isEmpty ?? true) {
-              return '우측 아이콘을 이용해 지역를 설정해 주세요';
+              return '우측 아이콘을 이용해 날짜를 설정해 주세요';
             }
 
             return null;

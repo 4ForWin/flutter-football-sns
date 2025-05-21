@@ -1,58 +1,70 @@
 class FeedDto {
   String id;
-  String title;
-  String content;
+  String cost;
+  String person;
   String imageUrl;
   String createAt;
   String teamName;
   String location;
+  String level;
+  String date;
 
   FeedDto({
     required this.id,
-    required this.title,
-    required this.content,
+    required this.cost,
+    required this.person,
     required this.imageUrl,
     required this.createAt,
     required this.teamName,
     required this.location,
+    required this.level,
+    required this.date,
   });
 
   FeedDto copyWith({
     String? id,
-    String? title,
-    String? content,
+    String? cost,
+    String? person,
     String? imageUrl,
     String? createAt,
     String? teamName,
     String? location,
+    String? level,
+    String? date,
   }) =>
       FeedDto(
         id: id ?? this.id,
-        title: title ?? this.title,
-        content: content ?? this.content,
+        cost: cost ?? this.cost,
+        person: person ?? this.person,
         imageUrl: imageUrl ?? this.imageUrl,
         createAt: createAt ?? this.createAt,
         teamName: teamName ?? this.teamName,
         location: location ?? this.location,
+        level: level ?? this.level,
+        date: date ?? this.date,
       );
 
   factory FeedDto.fromJson(Map<String, dynamic> json) => FeedDto(
         id: json["id"],
-        title: json["title"],
-        content: json["content"],
+        cost: json["cost"],
+        person: json["person"],
         imageUrl: json["imageUrl"],
         createAt: json["createAt"],
         teamName: json["teamName"],
         location: json["location"],
+        level: json["level"],
+        date: json["date"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "title": title,
-        "content": content,
+        "cost": cost,
+        "person": person,
         "imageUrl": imageUrl,
         "createAt": createAt,
         "teamName": teamName,
         "location": location,
+        "level": level,
+        "date": date,
       };
 }

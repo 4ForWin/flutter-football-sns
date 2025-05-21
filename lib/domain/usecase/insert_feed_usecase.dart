@@ -6,18 +6,22 @@ class InsertFeedUsecase {
   InsertFeedUsecase(this._feedRepository);
 
   Future<bool> execute({
-    required String title,
-    required String content,
+    required String cost,
+    required String person,
     required String imageUrl,
     required String teamName,
     required String location,
+    required String level,
+    required DateTime date,
   }) async {
     return await _feedRepository.insertFeed(
-      title: title,
-      content: content,
+      cost: cost,
+      person: person,
       imageUrl: imageUrl,
       teamName: teamName,
       location: location,
+      level: level,
+      date: date,
     );
   }
 }

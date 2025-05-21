@@ -5,11 +5,13 @@ import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
 class ImageBottomSheet extends StatelessWidget {
+  final EdgeInsets scaffoldPadding;
   final TextEditingController controller;
   final LoadingOverlay loadingOverlay;
 
   const ImageBottomSheet({
     super.key,
+    required this.scaffoldPadding,
     required this.controller,
     required this.loadingOverlay,
   });
@@ -23,7 +25,7 @@ class ImageBottomSheet extends StatelessWidget {
 
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom,
+            bottom: scaffoldPadding.bottom,
           ),
           child: Container(
             width: double.infinity,

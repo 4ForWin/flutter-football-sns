@@ -26,23 +26,28 @@ class FeedDataSourceImpl implements FeedDataSource {
 
   @override
   Future<bool> insertFeed({
-    required String title,
-    required String content,
+    required String cost,
+    required String person,
     required String imageUrl,
     required String teamName,
     required String location,
+    required String level,
+    required DateTime date,
   }) async {
     try {
       final collectionRef = _firestoreInstance.collection('feeds');
       DocumentReference documentRef = collectionRef.doc();
 
       await documentRef.set({
-        'title': title,
-        'content': content,
+        'cost': cost,
+        'person': person,
         'imageUrl': imageUrl,
         'teamName': teamName,
         'location': location,
         'createAt': DateTime.now().toIso8601String(),
+        'level': level,
+        'date': date
+            .toIso8601String(), // 파이어베이스에 추가할때는 타입이 DateTime -> String으로 변경해서 하기
       });
 
       return true;

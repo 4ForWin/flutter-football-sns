@@ -6,10 +6,12 @@ abstract interface class FeedDataSource {
 
   /// 피드 등록하기
   Future<bool> insertFeed({
-    required String title,
-    required String content,
+    required String cost,
+    required String person,
     required String imageUrl,
     required String teamName,
     required String location,
+    required String level,
+    required DateTime date,
   });
 }
