@@ -17,6 +17,7 @@ import 'package:mercenaryhub/data/repository/image_repository_impl.dart';
 import 'package:mercenaryhub/domain/repository/image_repository.dart';
 import 'package:mercenaryhub/domain/usecase/get_location_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/insert_feed_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/stream_fetch_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/upload_image_usecase.dart';
 
 final _feedDataSourceProvider = Provider<FeedDataSource>((ref) {
@@ -33,9 +34,14 @@ final fetchFeedsUsecaseProvider = Provider((ref) {
   return FetchFeedsUsecase(repository);
 });
 
-final insertFeedUseCaseProvider = Provider((ref) {
+final insertFeedUsecaseProvider = Provider((ref) {
   final repository = ref.read(_feedRepositoryProvider);
   return InsertFeedUsecase(repository);
+});
+
+final streamFetchFeedsUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_feedRepositoryProvider);
+  return StreamFetchFeedsUsecase(repository);
 });
 
 final _imageDataSourceProvider = Provider<ImageDataSource>((ref) {

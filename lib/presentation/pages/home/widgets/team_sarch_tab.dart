@@ -63,6 +63,7 @@ class TeamSarchTab extends StatelessWidget {
                         PostText(
                           '${DateFormat('HH:mm').format(feed.time.start!)} ~ ${DateFormat('HH:mm').format(feed.time.end!)}',
                         ),
+                        PostText(feed.content),
                         Spacer(flex: 4),
                         const StateIcons(),
                         Spacer(flex: 4),

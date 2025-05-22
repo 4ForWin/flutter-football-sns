@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/widgets/content_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/cost_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_icon.dart';
@@ -38,6 +39,7 @@ class _WritePageState extends ConsumerState<WritePage> {
   final startTimeTextController = TextEditingController();
   final endTimeTextController = TextEditingController();
   final imagePathTextController = TextEditingController();
+  final contentTextController = TextEditingController();
   final LoadingOverlay loadingOverlay = LoadingOverlay();
 
   @override
@@ -51,6 +53,7 @@ class _WritePageState extends ConsumerState<WritePage> {
     startTimeTextController.dispose();
     endTimeTextController.dispose();
     imagePathTextController.dispose();
+    contentTextController.dispose();
   }
 
   @override
@@ -77,6 +80,7 @@ class _WritePageState extends ConsumerState<WritePage> {
                   costTextController: costTextController,
                   personTextController: personTextController,
                   teamTextController: teamTextController,
+                  contentTextController: contentTextController,
                   loadingOverlay: loadingOverlay,
                   homeContext: widget.homeContext,
                 ),
@@ -135,6 +139,7 @@ class _WritePageState extends ConsumerState<WritePage> {
                   // DateField(),
                   // TimeField(type: 'start'),
                   // TimeField(type: 'end'),
+                  ContentTextFormField(controller: contentTextController),
                   SizedBox(
                     height: 20,
                   ),

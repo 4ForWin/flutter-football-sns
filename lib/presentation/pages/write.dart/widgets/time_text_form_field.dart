@@ -37,6 +37,10 @@ class TimeTextFormField extends StatelessWidget {
             labelStyle: TextStyle(
               color: Color(0xff222222),
             ),
+            hintText: '우측 아이콘을 이용해 시간을 설정해 주세요',
+            hintStyle: TextStyle(
+              color: Color(0xff222222),
+            ),
           ),
           validator: (value) {
             if (value?.trim().isEmpty ?? true) {

@@ -23,6 +23,7 @@ class FeedRepositoryImpl implements FeedRepository {
         level: feedDto.level,
         date: DateTime.parse(feedDto.date),
         time: feedDto.time,
+        content: feedDto.content,
       );
     }).toList();
   }
@@ -37,6 +38,7 @@ class FeedRepositoryImpl implements FeedRepository {
     required String level,
     required DateTime date,
     required TimeState time,
+    required String content,
   }) async {
     bool isComplete = await _feedDataSource.insertFeed(
       cost: cost,
@@ -47,7 +49,30 @@ class FeedRepositoryImpl implements FeedRepository {
       level: level,
       date: date,
       time: time,
+      content: content,
     );
     return isComplete;
+  }
+
+  @override
+  Stream<List<Feed>> streamFetchFeeds() {
+    final streamFeedDtoList = _feedDataSource.streamFetchFeeds();
+
+    return streamFeedDtoList.map((feedDtoList) {
+      return feedDtoList.map((feedDto) {
+        return Feed(
+          id: feedDto.id,
+          cost: feedDto.cost,
+          person: feedDto.person,
+          imageUrl: feedDto.imageUrl,
+          teamName: feedDto.teamName,
+          location: feedDto.location,
+          level: feedDto.level,
+          date: DateTime.parse(feedDto.date),
+          time: feedDto.time,
+          content: feedDto.content,
+        );
+      }).toList();
+    });
   }
 }

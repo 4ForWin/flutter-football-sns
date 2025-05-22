@@ -25,7 +25,8 @@ class TimeIcon extends StatelessWidget {
             print('시간 아이콘');
             final time = await writeVm.changeTime(context, type);
             print(time);
-            controller.text = time ?? '';
+            if (time == null) return;
+            controller.text = time;
             await Future.delayed(Duration(milliseconds: 10));
             changeEnable(false);
           },

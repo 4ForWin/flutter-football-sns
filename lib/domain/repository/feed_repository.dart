@@ -12,5 +12,7 @@ abstract interface class FeedRepository {
     required String level,
     required DateTime date,
     required TimeState time,
+    required String content,
   });
+  Stream<List<Feed>> streamFetchFeeds();
 }

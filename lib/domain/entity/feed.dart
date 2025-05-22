@@ -10,6 +10,7 @@ class Feed {
   String level;
   DateTime date;
   TimeState time;
+  String content;
 
   Feed({
     required this.id,
@@ -21,5 +22,6 @@ class Feed {
     required this.level,
     required this.date,
     required this.time,
+    required this.content,
   });
 }

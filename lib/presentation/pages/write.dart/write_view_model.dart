@@ -134,20 +134,56 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
     );
 
-    DateTime dateAndTime = DateTime(
-      state.date.year,
-      state.date.month,
-      state.date.day,
-      selectedTime!.hour,
-      selectedTime.minute,
-    );
+    if (selectedTime != null) {
+      DateTime dateAndTime = DateTime(
+        state.date.year,
+        state.date.month,
+        state.date.day,
+        selectedTime!.hour,
+        selectedTime.minute,
+      );
 
-    if (type == 'start') {
-      state = state.copyWith(time: state.time.copyWith(start: dateAndTime));
-      return DateFormat('HH:mm').format(dateAndTime);
-    } else if (type == 'end') {
-      state = state.copyWith(time: state.time.copyWith(end: dateAndTime));
-      return DateFormat('HH:mm').format(dateAndTime);
+      if (type == 'start') {
+        if (state.time.end != null && context.mounted) {
+          if (dateAndTime == state.time.end ||
+              dateAndTime.isAfter(state.time.end!)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  '시작 시간이 끝 시간보다 빨라야 합니다.',
+                  style: TextStyle(color: Color(0xffC82223)),
+                ),
+                duration: Duration(seconds: 5),
+              ),
+            );
+
+            return ''; // 유효성 검사 할 수 있게 하기 위해
+          }
+        }
+
+        state = state.copyWith(time: state.time.copyWith(start: dateAndTime));
+        return DateFormat('HH:mm').format(dateAndTime);
+      } else if (type == 'end') {
+        if (state.time.start != null && context.mounted) {
+          if (dateAndTime == state.time.start ||
+              dateAndTime.isBefore(state.time.start!)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  '시작 시간이 끝 시간보다 빨라야 합니다.',
+                  style: TextStyle(color: Color(0xffC82223)),
+                ),
+                duration: Duration(seconds: 5),
+              ),
+            );
+
+            return ''; // 유효성 검사 할 수 있게 하기 위해
+          }
+        }
+
+        state = state.copyWith(time: state.time.copyWith(end: dateAndTime));
+        return DateFormat('HH:mm').format(dateAndTime);
+      }
     }
 
     return null;
@@ -171,8 +207,9 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
     required String teamName,
     required String cost,
     required String person,
+    required String content,
   }) async {
-    final insertFeedUsecase = ref.read(insertFeedUseCaseProvider);
+    final insertFeedUsecase = ref.read(insertFeedUsecaseProvider);
     bool isComplete = await insertFeedUsecase.execute(
       location: state.location!,
       teamName: teamName,
@@ -181,6 +218,7 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
       level: state.level!,
       date: state.date,
       time: state.time,
+      content: content,
       imageUrl: state.imageUrl!,
     );
 

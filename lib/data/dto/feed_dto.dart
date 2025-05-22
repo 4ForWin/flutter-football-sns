@@ -11,6 +11,7 @@ class FeedDto {
   String level;
   String date;
   TimeState time;
+  String content;
 
   FeedDto({
     required this.id,
@@ -23,6 +24,7 @@ class FeedDto {
     required this.level,
     required this.date,
     required this.time,
+    required this.content,
   });
 
   FeedDto copyWith({
@@ -36,6 +38,7 @@ class FeedDto {
     String? level,
     String? date,
     TimeState? time,
+    String? content,
   }) =>
       FeedDto(
         id: id ?? this.id,
@@ -48,6 +51,7 @@ class FeedDto {
         level: level ?? this.level,
         date: date ?? this.date,
         time: time ?? this.time,
+        content: content ?? this.content,
       );
 
   factory FeedDto.fromJson(Map<String, dynamic> json) => FeedDto(
@@ -61,6 +65,7 @@ class FeedDto {
         level: json["level"],
         date: json["date"],
         time: TimeState.fromJson(json["time"]),
+        content: json["content"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -74,5 +79,6 @@ class FeedDto {
         "level": level,
         "date": date,
         "time": time.toJson(),
+        "content": content,
       };
 }

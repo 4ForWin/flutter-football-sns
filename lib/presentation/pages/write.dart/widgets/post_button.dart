@@ -9,6 +9,7 @@ class PostButton extends StatelessWidget {
   final TextEditingController costTextController;
   final TextEditingController personTextController;
   final TextEditingController teamTextController;
+  final TextEditingController contentTextController;
   final LoadingOverlay loadingOverlay;
 
   const PostButton({
@@ -18,6 +19,7 @@ class PostButton extends StatelessWidget {
     required this.costTextController,
     required this.personTextController,
     required this.teamTextController,
+    required this.contentTextController,
     required this.loadingOverlay,
   });
 
@@ -38,9 +40,10 @@ class PostButton extends StatelessWidget {
                 loadingOverlay.show(context);
                 await writeVm.uploadImage();
                 bool isComplte = await writeVm.insertFeed(
-                  teamName: teamTextController.text,
-                  cost: costTextController.text,
-                  person: personTextController.text,
+                  teamName: teamTextController.text.trim(),
+                  cost: costTextController.text.trim(),
+                  person: personTextController.text.trim(),
+                  content: contentTextController.text.trim(),
                 );
                 if (isComplte) {
                   print('✅ 게시 완료');

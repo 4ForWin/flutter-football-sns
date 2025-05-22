@@ -20,7 +20,8 @@ class DateIcon extends StatelessWidget {
             print('날짜 아이콘');
             final date = await writeVm.changeDate(context);
             print(date);
-            controller.text = date ?? '';
+            if (date == null) return;
+            controller.text = date;
             await Future.delayed(Duration(milliseconds: 10));
             writeVm.changeIsDateFieldEnable(false);
           },

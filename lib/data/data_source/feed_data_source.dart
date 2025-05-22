@@ -15,5 +15,9 @@ abstract interface class FeedDataSource {
     required String level,
     required DateTime date,
     required TimeState time,
+    required String content,
   });
+
+  /// 피드 스트림으로 다 가져오기
+  Stream<List<FeedDto>> streamFetchFeeds();
 }

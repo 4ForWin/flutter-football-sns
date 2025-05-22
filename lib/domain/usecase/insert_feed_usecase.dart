@@ -15,6 +15,7 @@ class InsertFeedUsecase {
     required String level,
     required DateTime date,
     required TimeState time,
+    required String content,
   }) async {
     return await _feedRepository.insertFeed(
       cost: cost,
@@ -25,6 +26,7 @@ class InsertFeedUsecase {
       level: level,
       date: date,
       time: time,
+      content: content,
     );
   }
 }
