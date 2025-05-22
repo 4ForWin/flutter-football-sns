@@ -7,25 +7,17 @@ class ContentTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: TextFormField(
-        controller: controller,
-        expands: true,
-        maxLines: null,
-        textInputAction: TextInputAction.newline,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          hintText: '시간, 장소 등 자세한 내용을 입력해 주세요',
-        ),
-        validator: (value) {
-          if (value?.trim().isEmpty ?? true) {
-            return '시간, 장소 등 자세한 내용을 입력해 주세요';
-          }
-
-          return null;
-        },
+    return TextFormField(
+      maxLength: 30,
+      controller: controller,
+      style: TextStyle(
+        color: Color(0xff222222),
       ),
+      decoration: InputDecoration(
+          labelText: '장소 및 특이사항',
+          labelStyle: TextStyle(
+            color: Color(0xff222222),
+          )),
     );
   }
 }

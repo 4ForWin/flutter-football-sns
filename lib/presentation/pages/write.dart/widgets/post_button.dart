@@ -6,18 +6,20 @@ import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart
 class PostButton extends StatelessWidget {
   final BuildContext homeContext;
   final GlobalKey<FormState> formKey;
-  final TextEditingController titleTextController;
-  final TextEditingController contentTextController;
+  final TextEditingController costTextController;
+  final TextEditingController personTextController;
   final TextEditingController teamTextController;
+  final TextEditingController contentTextController;
   final LoadingOverlay loadingOverlay;
 
   const PostButton({
     super.key,
     required this.homeContext,
     required this.formKey,
-    required this.titleTextController,
-    required this.contentTextController,
+    required this.costTextController,
+    required this.personTextController,
     required this.teamTextController,
+    required this.contentTextController,
     required this.loadingOverlay,
   });
 
@@ -38,9 +40,10 @@ class PostButton extends StatelessWidget {
                 loadingOverlay.show(context);
                 await writeVm.uploadImage();
                 bool isComplte = await writeVm.insertFeed(
-                  title: titleTextController.text,
-                  content: contentTextController.text,
-                  teamName: teamTextController.text,
+                  teamName: teamTextController.text.trim(),
+                  cost: costTextController.text.trim(),
+                  person: personTextController.text.trim(),
+                  content: contentTextController.text.trim(),
                 );
                 if (isComplte) {
                   print('✅ 게시 완료');
