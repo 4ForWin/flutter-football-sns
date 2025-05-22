@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import '../../../../domain/usecases/login_with_kakao.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KakaoLoginViewModel extends ChangeNotifier {
   final LoginWithKakao loginUseCase;
-
+  final prefs = SharedPrefs.instance;
   KakaoLoginViewModel(this.loginUseCase);
 
   bool _isLoading = false;
@@ -23,11 +25,11 @@ class KakaoLoginViewModel extends ChangeNotifier {
       _isLoading = false;
 
       if (_user != null) {
-        debugPrint("✅ 카카오 로그인 성공");
-        // TODO: 홈 화면으로 이동 처리 등 추가
+        prefs.setBool('isLogined', true);
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('❌ 로그인 실패')), 
+          const SnackBar(content: Text('❌ 로그인 실패')),
         );
       }
     } catch (e) {

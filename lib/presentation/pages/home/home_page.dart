@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
                 Text(
                   '서울특별시 금천구',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16, 
                     color: Colors.white,
                   ),
                 ),
