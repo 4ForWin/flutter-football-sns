@@ -4,7 +4,11 @@ class SettingTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const SettingTile({super.key, required this.title, required this.onTap});
+  const SettingTile({
+    super.key,
+    required this.title,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

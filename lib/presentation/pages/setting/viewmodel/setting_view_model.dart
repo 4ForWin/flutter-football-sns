@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 
 final settingViewModelProvider = Provider((ref) => SettingViewModel());
 
 class SettingViewModel {
+  // 카카오 사용자 정보 가져오기
+  Future<kakao.User?> fetchKakaoUserInfo() async {
+    try {
+      final user = await kakao.UserApi.instance.me();
+      return user;
+    } catch (e) {
+      print('사용자 정보 가져오기 실패: $e');
+      return null;
+    }
+  }
+
   void navigateToAlarmSetting(BuildContext context) {
     Navigator.pushNamed(context, '/alarm_setting');
   }
@@ -79,14 +93,32 @@ class SettingViewModel {
       context: context,
       builder: (_) => const AlertDialog(
         title: Text('버전정보'),
-        content: Text('현재 버전: ver.'),
+        content: Text('현재 버전: ver.1.0.0'),
       ),
     );
   }
 
-  Future<void> logout() async {
-    // TODO 실제 로그아웃 처리 로직 작성
-    await Future.delayed(const Duration(milliseconds: 500)); //대기
+  // 카카오 로그아웃 구현
+  Future<bool> logout() async {
+    try {
+      // 1. 카카오 로그아웃
+      await kakao.UserApi.instance.logout();
+      print('카카오 로그아웃 성공');
+
+      // 2. Firebase 로그아웃
+      await firebase.FirebaseAuth.instance.signOut();
+      print('Firebase 로그아웃 성공');
+
+      // 3. SharedPreferences 로그인 상태 제거
+      final prefs = SharedPrefs.instance;
+      await prefs.remove('isLogined');
+      print('SharedPreferences 로그인 상태 제거 성공');
+
+      return true;
+    } catch (e) {
+      print('로그아웃 실패: $e');
+      return false;
+    }
   }
 
   void onLogoutPressed(BuildContext context) async {
@@ -109,9 +141,20 @@ class SettingViewModel {
     );
 
     if (confirmed == true) {
-      await logout();
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login', (route) => false); //로그아웃시 이동
+      final success = await logout();
+      if (success && context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
+      } else if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('로그아웃에 실패했습니다.'),
+          ),
+        );
+      }
     }
   }
 }

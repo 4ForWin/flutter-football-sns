@@ -13,11 +13,19 @@ class SettingPage extends ConsumerWidget {
     final viewModel = ref.read(settingViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('설정')),
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        foregroundColor: const Color(0xFF222222),
+        elevation: 0,
+        title: const Text('설정'),
+      ),
       body: ListView(
         children: [
           const ProfileSection(),
-          const Divider(height: 1),
+          const Divider(height: 1, color: Color(0xFFE8EEF2)),
+
+          // 기본 설정 항목들
           SettingTile(
             title: '신청 내역',
             onTap: () => viewModel.navigateToApplyHistory(context),
@@ -34,6 +42,11 @@ class SettingPage extends ConsumerWidget {
             title: '버전정보',
             onTap: () => viewModel.showAppVersion(context),
           ),
+
+          // 구분선
+          const Divider(height: 1, color: Color(0xFFE8EEF2)),
+
+          // 로그아웃
           SettingTile(
             title: '로그아웃',
             onTap: () => viewModel.onLogoutPressed(context),
