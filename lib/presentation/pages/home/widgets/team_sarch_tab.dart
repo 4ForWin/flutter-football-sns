@@ -33,7 +33,7 @@ class _TeamSarchTabState extends ConsumerState<TeamSarchTab> {
 
           // TODO: uid로 하기
           feedVm.insertFeedLog(
-            uid: 'hj',
+            uid: FirebaseAuth.instance.currentUser!.uid,
             feedId: feedList[index].id,
             isApplicant: direction == SwipeDirection.right ? true : false,
           );
