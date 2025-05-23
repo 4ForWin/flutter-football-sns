@@ -66,11 +66,6 @@ class FeedViewModel extends Notifier<List<Feed>> {
     });
   }
 
-  Future<void> addUserToList(Feed feed, SwipeDirection direction) async {
-    final addUserToListUsecase = ref.read(addUserToListUsecaseProvider);
-    await addUserToListUsecase.execute(feed, direction);
-  }
-
   Future<void> fetchFeedLogs(String uid) async {
     final fetchFeedLogsUsecase = ref.read(fetchFeedLogsUsecaseProvider);
     _feedLog = await fetchFeedLogsUsecase.execute(uid);
