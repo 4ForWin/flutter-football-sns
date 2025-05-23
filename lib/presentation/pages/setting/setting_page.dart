@@ -28,7 +28,7 @@ class SettingPage extends ConsumerWidget {
           ),
           SettingTile(
             title: '이용약관 및 개인정보 처리방침',
-            onTap: () => viewModel.navigateToPolicy(context),
+            onTap: () => viewModel.showPolicyLinks(context),
           ),
           SettingTile(
             title: '버전정보',
