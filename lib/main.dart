@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:mercenaryhub/core/notification_service/notification_service.dart';
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import 'package:mercenaryhub/firebase_options.dart';
 import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
@@ -23,6 +25,8 @@ void main() async {
   await SharedPrefs.init(); // SharedPreferences 초기화
   await dotenv.load(fileName: ".env");
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY']);
+  initLocalNotification(); // ✅ 알림 초기화
+  FirebaseMessaging.onMessage.listen(showNotification); // ✅ 포그라운드 푸시 알림 표시
   runApp(ProviderScope(child: const MainApp()));
 }
 
