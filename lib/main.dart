@@ -12,6 +12,8 @@ import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
 import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
 import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/team_apply_history/team_apply_history_page.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_page.dart';
 import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +43,9 @@ class MainApp extends StatelessWidget {
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
+        '/team_apply_history': (context) => const TeamApplyHistoryPage(),
+        '/mercenary_apply_history': (context) =>
+            const MercenaryApplyHistoryPage(),
         '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginView(),

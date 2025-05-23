@@ -23,8 +23,12 @@ class SettingViewModel {
     Navigator.pushNamed(context, '/alarm_setting');
   }
 
-  void navigateToApplyHistory(BuildContext context) {
-    Navigator.pushNamed(context, '/apply_history');
+  void navigateToTeamApplyHistory(BuildContext context) {
+    Navigator.pushNamed(context, '/team_apply_history');
+  }
+
+  void navigateToMercenaryApplyHistory(BuildContext context) {
+    Navigator.pushNamed(context, '/mercenary_apply_history');
   }
 
   Future<void> showPolicyLinks(BuildContext context) async {
