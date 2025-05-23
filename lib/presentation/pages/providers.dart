@@ -13,7 +13,6 @@ import 'package:mercenaryhub/data/repository/location_repository_impl.dart';
 import 'package:mercenaryhub/domain/repository/feed_log_repository.dart';
 import 'package:mercenaryhub/domain/repository/feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/location_repository.dart';
-import 'package:mercenaryhub/domain/usecase/add_user_to_list_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_feed_logs_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_feeds_usecase.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -49,11 +48,6 @@ final insertFeedUsecaseProvider = Provider((ref) {
 final streamFetchFeedsUsecaseProvider = Provider((ref) {
   final repository = ref.read(_feedRepositoryProvider);
   return StreamFetchFeedsUsecase(repository);
-});
-
-final addUserToListUsecaseProvider = Provider((ref) {
-  final repository = ref.read(_feedRepositoryProvider);
-  return AddUserToListUsecase(repository);
 });
 
 final _feedLogDataSourceProvider = Provider<FeedLogDataSource>((ref) {

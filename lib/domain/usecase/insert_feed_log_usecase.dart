@@ -1,4 +1,3 @@
-import 'package:mercenaryhub/domain/entity/feed_log.dart';
 import 'package:mercenaryhub/domain/repository/feed_log_repository.dart';
 
 class InsertFeedLogUsecase {

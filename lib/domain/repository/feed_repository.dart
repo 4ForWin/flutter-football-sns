@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mercenaryhub/domain/entity/feed.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
-import 'package:swipable_stack/swipable_stack.dart';
 
 abstract interface class FeedRepository {
-  Future<List<Feed>> fetchFeeds(
-    String? lastId,
-    List<String> ignoreIds,
-  );
+  Future<List<Feed>> fetchFeeds({
+    required String? lastId,
+    required List<String> ignoreIds,
+    required String? location,
+  });
   Future<bool> insertFeed({
     required String cost,
     required String person,
@@ -20,5 +19,4 @@ abstract interface class FeedRepository {
     required String content,
   });
   Stream<List<Feed>> streamFetchFeeds();
-  Future<void> addUserToList(Feed feed, SwipeDirection direction);
 }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mercenaryhub/data/data_source/feed_log_data_source.dart';
-import 'package:mercenaryhub/data/dto/feed_dto.dart';
 import 'package:mercenaryhub/data/dto/feed_log_dto.dart';
 
 class FeedLogDataSourceImpl implements FeedLogDataSource {
