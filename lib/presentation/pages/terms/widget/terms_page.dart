@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_button_widget.dart';
 
 class TermsOfServiceAgreement extends StatefulWidget {
   const TermsOfServiceAgreement({super.key});
 
   @override
-  State<TermsOfServiceAgreement> createState() =>
-      _TermsOfServiceAgreementState();
+  State<TermsOfServiceAgreement> createState() => _TermsOfServiceAgreementState();
 }
 
 class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
@@ -14,20 +16,60 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
 
   bool get _buttonActive => _isChecked[1] && _isChecked[2] && _isChecked[3];
 
+  final List<String> _urls = [
+    '',
+    'https://www.notion.so/1fb94968b97380a9ac4fd33cdc6105c1?pvs=4',
+    'https://www.notion.so/1fb94968b973803d9664f58c5fa3d704?pvs=4',
+    'https://www.notion.so/1fb94968b9738030a653ce33e9993baf?pvs=4',
+    '',
+  ];
+
   void _updateCheckState(int index) {
     setState(() {
       if (index == 0) {
-        bool isAllChecked = !_isChecked.every((element) => element);
+        bool isAllChecked = !_isChecked.every((e) => e);
         _isChecked = List.generate(5, (_) => isAllChecked);
       } else {
         _isChecked[index] = !_isChecked[index];
-        _isChecked[0] = _isChecked.getRange(1, 5).every((element) => element);
+        _isChecked[0] = _isChecked.getRange(1, 5).every((e) => e);
       }
     });
   }
 
-  void _onSubmit() {
-    print("약관에 모두 동의했습니다!");
+  Future<void> _onSubmit() async {
+    final hasPermission = await _requestLocationPermission();
+
+    if (!hasPermission) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('위치 권한이 필요합니다. 설정에서 허용해주세요.'),
+        ),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('agreed_terms', true);
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  }
+
+  Future<bool> _requestLocationPermission() async {
+    var status = await Permission.location.status;
+
+    if (status.isDenied || status.isRestricted || status.isLimited) {
+      status = await Permission.location.request();
+    }
+
+    return status.isGranted;
+  }
+
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -38,13 +80,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
-          ),
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
         ),
       ),
       body: Padding(
@@ -89,23 +126,18 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     ];
 
     List<Widget> list = [
-      renderContainer(
-        _isChecked[0],
-        labels[0],
-        () => _updateCheckState(0),
-        isHeader: true,
-      ),
+      renderContainer(_isChecked[0], labels[0], () => _updateCheckState(0), isHeader: true),
       const SizedBox(height: 8),
     ];
 
-    list.addAll(List.generate(
-      4,
-      (index) => renderContainer(
+    list.addAll(List.generate(4, (index) {
+      return renderContainer(
         _isChecked[index + 1],
         labels[index + 1],
         () => _updateCheckState(index + 1),
-      ),
-    ));
+        index: index + 1,
+      );
+    }));
 
     return list;
   }
@@ -115,6 +147,7 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     String text,
     VoidCallback onTap, {
     bool isHeader = false,
+    int? index,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -158,6 +191,20 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
               ),
             ),
             const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+            if (!isHeader && index != null)
+              GestureDetector(
+                onTap: () {
+                  final url = _urls[index];
+                  if (url.isNotEmpty) {
+                    _launchURL(url);
+                  }
+                },
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: Colors.grey,
+                ),
+              ),
           ],
         ),
       ),
