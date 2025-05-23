@@ -8,7 +8,7 @@ class FeedTypeDialog extends StatefulWidget {
 class _FeedTypeDialogState extends State<FeedTypeDialog> {
   String? selected;
 
-  final typTextList = [
+  final labelList = [
     '용병 - 개인적으로 참여하는 경우',
     '팀 - 팀을 대표하여 모집하는 경우',
   ];
@@ -29,7 +29,7 @@ class _FeedTypeDialogState extends State<FeedTypeDialog> {
             Text("게시글 유형을 선택하세요",
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            ...typTextList.map(typeItem),
+            ...labelList.map(typeItem),
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -47,11 +47,11 @@ class _FeedTypeDialogState extends State<FeedTypeDialog> {
     );
   }
 
-  Widget typeItem(String typeText) {
-    final isSelected = selected == typeText;
+  Widget typeItem(String label) {
+    final isSelected = selected == label;
     return GestureDetector(
       onTap: () {
-        setState(() => selected = typeText);
+        setState(() => selected = label);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -67,7 +67,7 @@ class _FeedTypeDialogState extends State<FeedTypeDialog> {
         child: Row(
           children: [
             Expanded(
-              child: Text(typeText, style: const TextStyle(fontSize: 15)),
+              child: Text(label, style: const TextStyle(fontSize: 15)),
             ),
             if (isSelected)
               const Icon(

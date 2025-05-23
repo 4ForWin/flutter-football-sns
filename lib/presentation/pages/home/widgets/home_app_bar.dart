@@ -65,15 +65,15 @@ class _HomeAppBarState extends State<HomeAppBar> {
             IconButton(
               onPressed: () async {
                 print('게시글 버튼');
-                final typeText = await _showFeedTypeDialog();
+                String? typeText = await _showFeedTypeDialog();
 
                 if (typeText == null) return;
-
+                typeText = typeText.split('-').first.trim();
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   // HomePage class의 build 메서드의 context
                   return WritePage(
                     homeContext: context,
-                    typeText: typeText,
+                    typeText: typeText!,
                   );
                 }));
               },
