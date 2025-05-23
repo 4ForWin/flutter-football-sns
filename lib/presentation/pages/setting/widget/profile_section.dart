@@ -72,7 +72,6 @@ class _ProfileSectionState extends State<ProfileSection> {
     // 카카오 API에서 가져온 사용자 정보
     final profile = kakaoUser?.kakaoAccount?.profile;
     final nickname = profile?.nickname ?? '사용자';
-    final email = kakaoUser?.kakaoAccount?.email ?? '이메일 정보 없음';
     final profileImageUrl = profile?.profileImageUrl;
     final thumbnailImageUrl = profile?.thumbnailImageUrl;
 
@@ -118,14 +117,6 @@ class _ProfileSectionState extends State<ProfileSection> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    email,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF757B80),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
                 ],
               ),
             ),
