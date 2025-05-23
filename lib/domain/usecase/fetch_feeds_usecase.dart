@@ -6,7 +6,10 @@ class FetchFeedsUsecase {
 
   FetchFeedsUsecase(this._feedRepository);
 
-  Future<List<Feed>> execute() async {
-    return await _feedRepository.fetchFeeds();
+  Future<List<Feed>> execute(
+    String? lastId,
+    List<String> ignoreIds,
+  ) async {
+    return await _feedRepository.fetchFeeds(lastId, ignoreIds);
   }
 }
