@@ -157,7 +157,7 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
                 ),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+            const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
           ],
         ),
       ),
