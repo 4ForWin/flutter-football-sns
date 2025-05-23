@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mercenaryhub/domain/entity/feed.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
-import 'package:swipable_stack/swipable_stack.dart';
 
 abstract interface class FeedRepository {
   Future<List<Feed>> fetchFeeds(
@@ -20,5 +18,4 @@ abstract interface class FeedRepository {
     required String content,
   });
   Stream<List<Feed>> streamFetchFeeds();
-  Future<void> addUserToList(Feed feed, SwipeDirection direction);
 }

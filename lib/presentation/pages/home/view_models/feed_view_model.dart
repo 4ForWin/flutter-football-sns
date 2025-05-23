@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/domain/entity/feed.dart';
 import 'package:mercenaryhub/domain/entity/feed_log.dart';
-import 'package:mercenaryhub/domain/usecase/stream_fetch_feeds_usecase.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
@@ -22,7 +21,7 @@ class FeedViewModel extends Notifier<List<Feed>> {
 
   void initialize() async {
     // TODO: uid로 변경하기
-    await fetchFeedLogs('hj');
+    await fetchFeedLogs(FirebaseAuth.instance.currentUser!.uid);
     fetchFeeds();
   }
 

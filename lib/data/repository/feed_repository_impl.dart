@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mercenaryhub/data/data_source/feed_data_source.dart';
 import 'package:mercenaryhub/domain/entity/feed.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 import 'package:mercenaryhub/domain/repository/feed_repository.dart';
-import 'package:swipable_stack/swipable_stack.dart';
 
 class FeedRepositoryImpl implements FeedRepository {
   final FeedDataSource _feedDataSource;
@@ -79,10 +77,5 @@ class FeedRepositoryImpl implements FeedRepository {
         );
       }).toList();
     });
-  }
-
-  @override
-  Future<void> addUserToList(Feed feed, SwipeDirection direction) async {
-    await _feedDataSource.addUserToList(feed, direction);
   }
 }
