@@ -9,11 +9,16 @@ class FeedRepositoryImpl implements FeedRepository {
   FeedRepositoryImpl(this._feedDataSource);
 
   @override
-  Future<List<Feed>> fetchFeeds(
-    String? lastId,
-    List<String> ignoreIds,
-  ) async {
-    final feedDtoList = await _feedDataSource.fetchFeeds(lastId, ignoreIds);
+  Future<List<Feed>> fetchFeeds({
+    required String? lastId,
+    required List<String> ignoreIds,
+    required String? location,
+  }) async {
+    final feedDtoList = await _feedDataSource.fetchFeeds(
+      lastId: lastId,
+      ignoreIds: ignoreIds,
+      location: location,
+    );
 
     return feedDtoList.map((feedDto) {
       return Feed(

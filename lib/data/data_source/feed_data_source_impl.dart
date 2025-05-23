@@ -9,14 +9,23 @@ class FeedDataSourceImpl implements FeedDataSource {
   FeedDataSourceImpl(this._firestoreInstance);
 
   @override
-  Future<List<FeedDto>> fetchFeeds(
-    String? lastId,
-    List<String> ignoreIds,
-  ) async {
+  Future<List<FeedDto>> fetchFeeds({
+    required String? lastId,
+    required List<String> ignoreIds,
+    required String? location,
+  }) async {
     try {
       var collectionQuery = _firestoreInstance
           .collection('feeds')
+          .where('location', isEqualTo: location)
           .orderBy('createAt', descending: true);
+      final testDocs = (await collectionQuery.get()).docs;
+
+      print('❤️fetchFeeds location - $location');
+      testDocs.map((doc) {
+        print(doc.data());
+      }).toList();
+      print('❤️fetchFeeds location - $location');
 
       if (ignoreIds.isNotEmpty) {
         collectionQuery =

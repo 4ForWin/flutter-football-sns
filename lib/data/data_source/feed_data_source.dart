@@ -3,7 +3,11 @@ import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 abstract interface class FeedDataSource {
   /// 피드 다 가져오기
-  Future<List<FeedDto>> fetchFeeds(String? lastId, List<String> ignoreIds);
+  Future<List<FeedDto>> fetchFeeds({
+    required String? lastId,
+    required List<String> ignoreIds,
+    required String? location,
+  });
 
   /// 피드 등록하기
   Future<bool> insertFeed({

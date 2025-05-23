@@ -33,7 +33,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Pretendard'), // 앱 기본 폰트 변경
-      home: const SettingPage(),
+      home: const SplashView(),
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),

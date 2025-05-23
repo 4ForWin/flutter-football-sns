@@ -22,10 +22,16 @@ class _TeamSarchTabState extends ConsumerState<TeamSarchTab> {
   Widget build(BuildContext context) {
     final feedList = ref.watch(feedViewModelProvider);
     final feedVm = ref.read(feedViewModelProvider.notifier);
-
+    print('✌️');
+    print('피드 변경');
+    print('✌️');
     return SwipableStack(
         controller: swipableStackController,
         itemCount: feedList.length,
+        detectableSwipeDirections: const {
+          SwipeDirection.right,
+          SwipeDirection.left,
+        },
         // 스와이프가 완료되면, 즉 현재 이미지가 사라지면 발생하는 이벤트
         onSwipeCompleted: (index, direction) {
           print('카드 $index가 $direction으로 스와이프됨');
