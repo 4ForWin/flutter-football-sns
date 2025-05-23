@@ -10,11 +10,9 @@ import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
 import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
 import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
-import 'package:mercenaryhub/presentation/pages/setting/policy_page.dart';
 import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +22,7 @@ void main() async {
 
   await SharedPrefs.init(); // SharedPreferences 초기화
   await dotenv.load(fileName: ".env");
-   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY']); 
+  KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY']);
   runApp(ProviderScope(child: const MainApp()));
 }
 
@@ -35,13 +33,12 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Pretendard'), // 앱 기본 폰트 변경
-      home: const SplashView(),
+      home: const SettingPage(),
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
-        '/terms' : (context) => const TermsOfServiceAgreement(),
+        '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
-        '/policy': (context) => const PolicyPage(),
         '/login': (context) => const LoginView(),
       },
 
