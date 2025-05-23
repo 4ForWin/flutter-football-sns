@@ -78,7 +78,6 @@ class _ProfileSectionState extends State<ProfileSection> {
 
     // 프로필 이미지 우선순위: profileImageUrl > thumbnailImageUrl > 기본 이미지
     final imageUrl = profileImageUrl ?? thumbnailImageUrl;
-
     return Container(
       color: const Color(0xFFFFFFFF),
       child: Padding(
@@ -143,6 +142,33 @@ class _ProfileSectionState extends State<ProfileSection> {
                 size: 20,
               ),
               tooltip: '프로필 새로고침',
+            const CircleAvatar(
+              radius: 28,
+              backgroundImage: AssetImage(
+                'assets/images/profile_sample.png',
+              ), // 이미지 경로
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  '이름',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF222222),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  '이메일',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF757B80),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
