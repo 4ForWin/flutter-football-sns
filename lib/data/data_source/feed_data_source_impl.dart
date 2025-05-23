@@ -18,8 +18,12 @@ class FeedDataSourceImpl implements FeedDataSource {
     try {
       var collectionQuery = _firestoreInstance
           .collection('feeds')
-          .where(FieldPath.documentId, whereNotIn: ignoreIds)
           .orderBy('createAt', descending: true);
+
+      if (ignoreIds.isNotEmpty) {
+        collectionQuery =
+            collectionQuery.where(FieldPath.documentId, whereNotIn: ignoreIds);
+      }
 
       if (lastId != null) {
         print('✅피드 데이터 소스 : $lastId');
