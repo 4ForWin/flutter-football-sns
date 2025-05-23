@@ -26,7 +26,7 @@ class KakaoLoginViewModel extends ChangeNotifier {
 
       if (_user != null) {
         prefs.setBool('isLogined', true);
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/terms', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('❌ 로그인 실패')),
