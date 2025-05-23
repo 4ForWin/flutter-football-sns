@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import '../../../../domain/usecases/login_with_kakao.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class KakaoLoginViewModel extends ChangeNotifier {
   final LoginWithKakao loginUseCase;
   final prefs = SharedPrefs.instance;
+
   KakaoLoginViewModel(this.loginUseCase);
 
   bool _isLoading = false;
@@ -18,14 +20,23 @@ class KakaoLoginViewModel extends ChangeNotifier {
   Future<void> login(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final result = await loginUseCase();
       _user = result;
       _isLoading = false;
 
       if (_user != null) {
+        // ✅ 로그인 상태 저장
         prefs.setBool('isLogined', true);
+
+        // ✅ FCM 권한 요청 및 토큰 수신
+        await FirebaseMessaging.instance.requestPermission();
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null) {
+          await _saveFCMToken(_user!.uid, fcmToken);
+        }
+        // ✅ 홈으로 이동
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -40,5 +51,13 @@ class KakaoLoginViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// Firestore에 FCM 토큰 저장
+  Future<void> _saveFCMToken(String uid, String token) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'fcmToken': token,
+      'updatedAt': DateTime.now().toIso8601String(),
+    }, SetOptions(merge: true));
   }
 }

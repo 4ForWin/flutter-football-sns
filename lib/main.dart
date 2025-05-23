@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,19 +14,36 @@ import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart'
 import 'package:mercenaryhub/presentation/pages/setting/policy_page.dart';
 import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    _listenToTokenRefresh(user.uid); // ✅ 앱 시작 시 리스너 등록
+  }
 
   await SharedPrefs.init(); // SharedPreferences 초기화
   await dotenv.load(fileName: ".env");
-   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY']); 
-  runApp(ProviderScope(child: const MainApp()));
+  KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_KEY']);
+  runApp(const ProviderScope(child: MainApp()));
+}
+
+/// ✅ FCM 토큰 갱신 감지 및 Firestore 업데이트 함수
+void _listenToTokenRefresh(String uid) {
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+    debugPrint('🔁 새 FCM 토큰 감지: $newToken');
+
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'fcmToken': newToken,
+      'updatedAt': DateTime.now().toIso8601String(),
+    }, SetOptions(merge: true));
+  });
 }
 
 class MainApp extends StatelessWidget {
@@ -39,23 +57,21 @@ class MainApp extends StatelessWidget {
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
-        '/terms' : (context) => const TermsOfServiceAgreement(),
+        '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/policy': (context) => const PolicyPage(),
         '/login': (context) => const LoginView(),
       },
 
-      //앱 자체 언어 설정 함으로써 캘린더를 한국어로 변경
+      // 캘린더, 날짜 등 한국어 로컬라이제이션 지원
       localizationsDelegates: [
-        // 앱의 로컬라이제이션을 구성합니다.
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        // 앱에서 지원하는 언어 목록을 설정합니다.
-        const Locale('ko', 'KR'), // 한국어
-        const Locale('en', 'US'), // 영어
+      supportedLocales: const [
+        Locale('ko', 'KR'),
+        Locale('en', 'US'),
       ],
     );
   }
