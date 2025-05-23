@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_button_widget.dart';
 
 class TermsOfServiceAgreement extends StatefulWidget {
@@ -18,10 +20,10 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
 
   final List<String> _urls = [
     '',
-    'https://www.notion.so/1fb94968b97380a9ac4fd33cdc6105c1?pvs=4',
-    'https://www.notion.so/1fb94968b973803d9664f58c5fa3d704?pvs=4',
-    'https://www.notion.so/1fb94968b9738030a653ce33e9993baf?pvs=4',
-    '',
+    'https://www.notion.so/1fb94968b97380a9ac4fd33cdc6105c1?pvs=4', // 회원 이용약관
+    'https://www.notion.so/1fb94968b973803d9664f58c5fa3d704?pvs=4', // 개인정보처리방침
+    'https://www.notion.so/1fb94968b9738030a653ce33e9993baf?pvs=4', // 위치정보 제공
+    '', // 이벤트 혜택
   ];
 
   void _updateCheckState(int index) {
@@ -48,8 +50,29 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
       return;
     }
 
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('사용자 인증 정보를 확인할 수 없습니다.')),
+      );
+      return;
+    }
+
+    final agreements = {
+      'terms': _isChecked[1],    // 이용약관
+      'privacy': _isChecked[2],  // 개인정보처리방침
+      'location': _isChecked[3], // 위치정보 제공
+      'agreedAt': DateTime.now().toIso8601String(),
+    };
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .set({'agreements': agreements}, SetOptions(merge: true));
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('agreed_terms', true);
+
     Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
   }
 
