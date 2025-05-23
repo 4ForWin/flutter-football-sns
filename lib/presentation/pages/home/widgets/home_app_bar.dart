@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/home/view_models/feed_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/home/widgets/feed_type_dialog.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_page.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
@@ -15,6 +16,7 @@ class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _HomeAppBarState extends State<HomeAppBar> {
   String? locationText;
+
   LoadingOverlay loadingOverlay = LoadingOverlay();
 
   @override
@@ -61,11 +63,18 @@ class _HomeAppBarState extends State<HomeAppBar> {
           ),
           actions: [
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 print('게시글 버튼');
+                final typeText = await _showFeedTypeDialog();
+
+                if (typeText == null) return;
+
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   // HomePage class의 build 메서드의 context
-                  return WritePage(homeContext: context);
+                  return WritePage(
+                    homeContext: context,
+                    typeText: typeText,
+                  );
                 }));
               },
               icon: Icon(
@@ -87,6 +96,13 @@ class _HomeAppBarState extends State<HomeAppBar> {
           ],
         );
       },
+    );
+  }
+
+  Future<String?> _showFeedTypeDialog() async {
+    return await showDialog<String>(
+      context: context,
+      builder: (context) => FeedTypeDialog(),
     );
   }
 }

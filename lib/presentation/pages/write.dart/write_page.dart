@@ -20,9 +20,12 @@ import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_text_for
 
 class WritePage extends ConsumerStatefulWidget {
   final BuildContext homeContext;
+  final String typeText;
+
   const WritePage({
     super.key,
     required this.homeContext,
+    required this.typeText,
   });
 
   @override
