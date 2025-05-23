@@ -3,12 +3,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/data/data_source/feed_data_source.dart';
 import 'package:mercenaryhub/data/data_source/feed_data_source_impl.dart';
+import 'package:mercenaryhub/data/data_source/feed_log_data_source.dart';
+import 'package:mercenaryhub/data/data_source/feed_log_data_source_impl.dart';
 import 'package:mercenaryhub/data/data_source/location_data_source.dart';
 import 'package:mercenaryhub/data/data_source/location_data_source_impl.dart';
+import 'package:mercenaryhub/data/repository/feed_log_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/feed_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/location_repository_impl.dart';
+import 'package:mercenaryhub/domain/repository/feed_log_repository.dart';
 import 'package:mercenaryhub/domain/repository/feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/location_repository.dart';
+import 'package:mercenaryhub/domain/usecase/add_user_to_list_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/fetch_feed_logs_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_feeds_usecase.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mercenaryhub/data/data_source/image_data_source.dart';
@@ -16,6 +22,7 @@ import 'package:mercenaryhub/data/data_source/image_data_source_impl.dart';
 import 'package:mercenaryhub/data/repository/image_repository_impl.dart';
 import 'package:mercenaryhub/domain/repository/image_repository.dart';
 import 'package:mercenaryhub/domain/usecase/get_location_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/insert_feed_log_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/insert_feed_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/stream_fetch_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/upload_image_usecase.dart';
@@ -42,6 +49,30 @@ final insertFeedUsecaseProvider = Provider((ref) {
 final streamFetchFeedsUsecaseProvider = Provider((ref) {
   final repository = ref.read(_feedRepositoryProvider);
   return StreamFetchFeedsUsecase(repository);
+});
+
+final addUserToListUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_feedRepositoryProvider);
+  return AddUserToListUsecase(repository);
+});
+
+final _feedLogDataSourceProvider = Provider<FeedLogDataSource>((ref) {
+  return FeedLogDataSourceImpl(FirebaseFirestore.instance);
+});
+
+final _feedLogRepositoryProvider = Provider<FeedLogRepository>((ref) {
+  final dataSource = ref.read(_feedLogDataSourceProvider);
+  return FeedLogRepositoryImpl(dataSource);
+});
+
+final fetchFeedLogsUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_feedLogRepositoryProvider);
+  return FetchFeedLogsUsecase(repository);
+});
+
+final insertFeedLogUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_feedLogRepositoryProvider);
+  return InsertFeedLogUsecase(repository);
 });
 
 final _imageDataSourceProvider = Provider<ImageDataSource>((ref) {

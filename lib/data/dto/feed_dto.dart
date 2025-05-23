@@ -1,5 +1,12 @@
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 
+/*
+reactions = [
+  {'hj': true}
+]
+List<Map<String, boolean>>
+ */
+
 class FeedDto {
   String id;
   String cost;
@@ -39,6 +46,7 @@ class FeedDto {
     String? date,
     TimeState? time,
     String? content,
+    List<Map<String, bool>>? reactions,
   }) =>
       FeedDto(
         id: id ?? this.id,
