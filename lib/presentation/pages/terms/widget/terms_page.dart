@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_button_widget.dart';
 
 class TermsOfServiceAgreement extends StatefulWidget {
@@ -12,16 +14,14 @@ class TermsOfServiceAgreement extends StatefulWidget {
 class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
   List<bool> _isChecked = List.generate(5, (_) => false);
 
-  // 필수 약관 체크 여부
   bool get _buttonActive => _isChecked[1] && _isChecked[2] && _isChecked[3];
 
-  // 약관 URL 리스트
   final List<String> _urls = [
-    '', // '모두 동의'는 URL 없음
+    '',
     'https://www.notion.so/1fb94968b97380a9ac4fd33cdc6105c1?pvs=4',
     'https://www.notion.so/1fb94968b973803d9664f58c5fa3d704?pvs=4',
     'https://www.notion.so/1fb94968b9738030a653ce33e9993baf?pvs=4',
-    '', // 선택 약관은 URL 없음
+    '',
   ];
 
   void _updateCheckState(int index) {
@@ -36,9 +36,31 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     });
   }
 
-  void _onSubmit() {
-    print("약관에 모두 동의했습니다!");
-    // 다음 화면으로 이동 가능
+  Future<void> _onSubmit() async {
+    final hasPermission = await _requestLocationPermission();
+
+    if (!hasPermission) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('위치 권한이 필요합니다. 설정에서 허용해주세요.'),
+        ),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('agreed_terms', true);
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  }
+
+  Future<bool> _requestLocationPermission() async {
+    var status = await Permission.location.status;
+
+    if (status.isDenied || status.isRestricted || status.isLimited) {
+      status = await Permission.location.request();
+    }
+
+    return status.isGranted;
   }
 
   Future<void> _launchURL(String url) async {
@@ -104,24 +126,18 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     ];
 
     List<Widget> list = [
-      renderContainer(
-        _isChecked[0],
-        labels[0],
-        () => _updateCheckState(0),
-        isHeader: true,
-      ),
+      renderContainer(_isChecked[0], labels[0], () => _updateCheckState(0), isHeader: true),
       const SizedBox(height: 8),
     ];
 
-    list.addAll(List.generate(
-      4,
-      (index) => renderContainer(
+    list.addAll(List.generate(4, (index) {
+      return renderContainer(
         _isChecked[index + 1],
         labels[index + 1],
         () => _updateCheckState(index + 1),
         index: index + 1,
-      ),
-    ));
+      );
+    }));
 
     return list;
   }
