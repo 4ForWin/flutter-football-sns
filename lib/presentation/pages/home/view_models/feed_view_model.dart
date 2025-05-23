@@ -18,6 +18,7 @@ class FeedViewModel extends Notifier<List<Feed>> {
 
   String? _lastId;
   bool _isLast = false;
+  List<FeedLog>? _feedLog;
 
   void initialize() async {
     // TODO: uid로 변경하기
@@ -30,7 +31,7 @@ class FeedViewModel extends Notifier<List<Feed>> {
     if (_isLast) return;
 
     final fetchFeedsUsecase = ref.read(fetchFeedsUsecaseProvider);
-    final feedIds = feedLog?.map((e) => e.feedId).toList() ?? [];
+    final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
     print('😍');
     print(feedIds);
     print('😍');
@@ -71,11 +72,9 @@ class FeedViewModel extends Notifier<List<Feed>> {
     await addUserToListUsecase.execute(feed, direction);
   }
 
-  List<FeedLog>? feedLog;
-
   Future<void> fetchFeedLogs(String uid) async {
     final fetchFeedLogsUsecase = ref.read(fetchFeedLogsUsecaseProvider);
-    feedLog = await fetchFeedLogsUsecase.execute(uid);
+    _feedLog = await fetchFeedLogsUsecase.execute(uid);
   }
 
   Future<void> insertFeedLog({
