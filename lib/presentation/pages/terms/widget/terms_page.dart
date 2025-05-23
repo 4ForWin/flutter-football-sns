@@ -1,33 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_button_widget.dart';
 
 class TermsOfServiceAgreement extends StatefulWidget {
   const TermsOfServiceAgreement({super.key});
 
   @override
-  State<TermsOfServiceAgreement> createState() =>
-      _TermsOfServiceAgreementState();
+  State<TermsOfServiceAgreement> createState() => _TermsOfServiceAgreementState();
 }
 
 class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
   List<bool> _isChecked = List.generate(5, (_) => false);
 
+  // 필수 약관 체크 여부
   bool get _buttonActive => _isChecked[1] && _isChecked[2] && _isChecked[3];
+
+  // 약관 URL 리스트
+  final List<String> _urls = [
+    '', // '모두 동의'는 URL 없음
+    'https://www.notion.so/1fb94968b97380a9ac4fd33cdc6105c1?pvs=4',
+    'https://www.notion.so/1fb94968b973803d9664f58c5fa3d704?pvs=4',
+    'https://www.notion.so/1fb94968b9738030a653ce33e9993baf?pvs=4',
+    '', // 선택 약관은 URL 없음
+  ];
 
   void _updateCheckState(int index) {
     setState(() {
       if (index == 0) {
-        bool isAllChecked = !_isChecked.every((element) => element);
+        bool isAllChecked = !_isChecked.every((e) => e);
         _isChecked = List.generate(5, (_) => isAllChecked);
       } else {
         _isChecked[index] = !_isChecked[index];
-        _isChecked[0] = _isChecked.getRange(1, 5).every((element) => element);
+        _isChecked[0] = _isChecked.getRange(1, 5).every((e) => e);
       }
     });
   }
 
   void _onSubmit() {
     print("약관에 모두 동의했습니다!");
+    // 다음 화면으로 이동 가능
+  }
+
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -38,13 +58,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
-          ),
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
         ),
       ),
       body: Padding(
@@ -104,6 +119,7 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
         _isChecked[index + 1],
         labels[index + 1],
         () => _updateCheckState(index + 1),
+        index: index + 1,
       ),
     ));
 
@@ -115,6 +131,7 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     String text,
     VoidCallback onTap, {
     bool isHeader = false,
+    int? index,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -157,7 +174,20 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
                 ),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+            if (!isHeader && index != null)
+              GestureDetector(
+                onTap: () {
+                  final url = _urls[index];
+                  if (url.isNotEmpty) {
+                    _launchURL(url);
+                  }
+                },
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: Colors.grey,
+                ),
+              ),
           ],
         ),
       ),
