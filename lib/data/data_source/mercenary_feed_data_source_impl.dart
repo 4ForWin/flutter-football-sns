@@ -24,6 +24,7 @@ class MercenaryFeedDataSourceImpl implements MercenaryFeedDataSource {
           .orderBy('createAt', descending: true);
 
       if (ignoreIds.isNotEmpty) {
+        print('✅✅✅✅✅✅✅ignoreIds');
         collectionQuery =
             collectionQuery.where(FieldPath.documentId, whereNotIn: ignoreIds);
       }
@@ -40,6 +41,9 @@ class MercenaryFeedDataSourceImpl implements MercenaryFeedDataSource {
       final docs = (await collectionQuery.limit(4).get()).docs;
 
       return docs.map((doc) {
+        print('✅✅✅✅');
+        print(doc.data());
+        print('✅✅✅✅');
         final map = doc.data();
         final newMap = {'id': doc.id, ...map};
         return MercenaryFeedDto.fromJson(newMap);

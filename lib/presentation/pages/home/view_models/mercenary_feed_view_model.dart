@@ -51,14 +51,13 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
       location: _location,
     );
 
-    print('👿');
-    print(nextFeeds.length);
-    print('👿');
     _isLast = nextFeeds.isEmpty;
 
     if (_isLast) return;
     _lastId = nextFeeds.last.id;
+
     state = [...state, ...nextFeeds];
+    print('mer❌❌❌❌❌❌❌❌');
   }
 
   void streamFetchMercenaryFeeds() {
@@ -92,6 +91,16 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
   }) async {
     final insertMercenaryFeedLogUsecase =
         ref.read(insertMercenaryFeedLogUsecaseProvider);
+
+    _feedLog = [
+      ..._feedLog ?? [],
+      MercenaryFeedLog(
+        uid: uid,
+        feedId: feedId,
+        isApplicant: isApplicant,
+      ),
+    ];
+
     await insertMercenaryFeedLogUsecase.execute(
       uid,
       feedId,

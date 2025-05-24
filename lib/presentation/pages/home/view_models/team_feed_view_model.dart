@@ -37,6 +37,9 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     print('✅FeedViewModel fetchFeeds');
     if (_isLast) return;
 
+    print('👰‍♂️👰‍♂️👰‍♂️');
+    print(_feedLog);
+    print('👰‍♂️👰‍♂️👰‍♂️');
     final fetchTeamFeedsUsecase = ref.read(fetchTeamFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
     print('😍');
@@ -57,6 +60,7 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     if (_isLast) return;
     _lastId = nextFeeds.last.id;
     state = [...state, ...nextFeeds];
+    print('team❌❌❌❌❌❌❌❌');
   }
 
   void streamFetchTeamFeeds() {
@@ -88,6 +92,16 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     required bool isApplicant,
   }) async {
     final insertTeamFeedLogUsecase = ref.read(insertTeamFeedLogUsecaseProvider);
+
+    _feedLog = [
+      ..._feedLog ?? [],
+      TeamFeedLog(
+        uid: uid,
+        feedId: feedId,
+        isApplicant: isApplicant,
+      ),
+    ];
+
     await insertTeamFeedLogUsecase.execute(uid, feedId, isApplicant);
   }
 }

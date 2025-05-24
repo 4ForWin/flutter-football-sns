@@ -26,6 +26,9 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
       if (ignoreIds.isNotEmpty) {
         collectionQuery =
             collectionQuery.where(FieldPath.documentId, whereNotIn: ignoreIds);
+        print('💄💄');
+        print(collectionQuery);
+        print('💄💄');
       }
 
       if (lastId != null) {
@@ -38,6 +41,9 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
       final docs = (await collectionQuery.limit(4).get()).docs;
 
       return docs.map((doc) {
+        print('💕💕💕💕💕');
+        print(doc.data());
+        print('💕💕💕💕💕');
         final map = doc.data();
         final newMap = {'id': doc.id, ...map};
         return TeamFeedDto.fromJson(newMap);
