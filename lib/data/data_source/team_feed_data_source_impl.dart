@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/data/data_source/team_feed_data_source.dart';
 import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
@@ -17,6 +18,9 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
     try {
       var collectionQuery = _firestoreInstance
           .collection('teamFeeds')
+          // TODO: 나중에 본인 uid 아닌 것들을 가져오기
+          // 복합색인 다시 만들기
+          // .where('uid', whereNotIn: [uid])
           .where('location', isEqualTo: location)
           .orderBy('createAt', descending: true);
 
@@ -40,8 +44,8 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
         return TeamFeedDto.fromJson(newMap);
       }).toList();
     } catch (e, s) {
-      print('❌fetchFeeds e: $e');
-      print('❌fetchFeeds s: $s');
+      print('❌fetchTeamFeeds e: $e');
+      print('❌fetchTeamFeeds s: $s');
       return [];
     }
   }
@@ -63,6 +67,7 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
       DocumentReference documentRef = collectionRef.doc();
 
       await documentRef.set({
+        'uid': FirebaseAuth.instance.currentUser?.uid,
         'cost': cost,
         'person': person,
         'imageUrl': imageUrl,
@@ -78,8 +83,8 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
 
       return true;
     } catch (e, s) {
-      print('❌insertFeed e: $e');
-      print('❌insertFeed s: $s');
+      print('❌insertTeamFeed e: $e');
+      print('❌insertTeamFeed s: $s');
       return false;
     }
   }

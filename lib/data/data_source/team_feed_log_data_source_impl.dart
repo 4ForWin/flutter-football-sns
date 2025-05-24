@@ -14,7 +14,7 @@ class TeamFeedLogDataSourceImpl implements TeamFeedLogDataSource {
       print(uid);
       print('💻💻💻');
       var collectionQuery = await _firestoreInstance
-          .collection('feedLog')
+          .collection('teamFeedLogs')
           .where('uid', isEqualTo: uid)
           .get();
 
@@ -39,7 +39,7 @@ class TeamFeedLogDataSourceImpl implements TeamFeedLogDataSource {
     required bool isApplicant,
   }) async {
     try {
-      final collectionRef = _firestoreInstance.collection('feedLog');
+      final collectionRef = _firestoreInstance.collection('teamFeedLogs');
       DocumentReference documentRef = collectionRef.doc();
 
       await documentRef.set({
@@ -50,8 +50,8 @@ class TeamFeedLogDataSourceImpl implements TeamFeedLogDataSource {
 
       return true;
     } catch (e, s) {
-      print('❌insertFeedLog e: $e');
-      print('❌insertFeedLog s: $s');
+      print('❌insertTeamFeedLog e: $e');
+      print('❌insertTeamFeedLog s: $s');
       return false;
     }
   }
