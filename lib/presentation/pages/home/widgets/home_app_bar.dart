@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/home_bottom_navigation_bar_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/mercenary_feed_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/home/view_models/team_feed_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/feed_type_dialog.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_page.dart';
@@ -24,7 +26,11 @@ class _HomeAppBarState extends State<HomeAppBar> {
     return Consumer(
       builder: (consumerContext, ref, child) {
         final writeVm = ref.read(writeViewModelProvider.notifier);
-        final feedVm = ref.read(feedViewModelProvider.notifier);
+        final teamFeedVm = ref.read(teamFeedViewModelProvider.notifier);
+        final mercenaryFeedVm =
+            ref.read(mercenaryFeedViewModelProvider.notifier);
+        final bottomNaviState =
+            ref.read(homeBottomNavigationBarViewModelProvider);
         return AppBar(
           backgroundColor: Color(0xff2B2B2B),
           title: GestureDetector(
@@ -32,7 +38,17 @@ class _HomeAppBarState extends State<HomeAppBar> {
               print('위치 버튼');
               loadingOverlay.show(context);
               String? location = await writeVm.getLocation();
-              feedVm.setLocationAndRefresh(location);
+
+              switch (bottomNaviState) {
+                case 0:
+                  teamFeedVm.setLocationAndRefresh(location);
+                  break;
+                case 1:
+                  mercenaryFeedVm.setLocationAndRefresh(location);
+                  break;
+                default:
+                  break;
+              }
               print('👀');
               print(location);
               print('👀');

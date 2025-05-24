@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/domain/entity/team_feed.dart';
-import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
+import 'package:mercenaryhub/domain/entity/mercenary_feed.dart';
+import 'package:mercenaryhub/domain/entity/mercenary_feed_log.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
-class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
+class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
   @override
   build() {
-    print('✅TeamFeedViewModel build');
+    print('✅MercenaryFeedViewModel build');
     // streamFetchFeeds();
     // fetchFeeds();
     initialize();
@@ -16,7 +16,7 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
 
   String? _lastId;
   bool _isLast = false;
-  List<TeamFeedLog>? _feedLog;
+  List<MercenaryFeedLog>? _feedLog;
   String? _location;
 
   void setLocationAndRefresh(String? location) {
@@ -25,25 +25,27 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     _lastId = null;
 
     state = [];
-    fetchTeamFeeds();
+    fetchMercenaryFeeds();
   }
 
   void initialize() async {
-    await fetchTeamFeedLogs(FirebaseAuth.instance.currentUser!.uid);
-    fetchTeamFeeds();
+    await fetchMercenaryFeedLogs(FirebaseAuth.instance.currentUser!.uid);
+    fetchMercenaryFeeds();
   }
 
-  void fetchTeamFeeds() async {
+  void fetchMercenaryFeeds() async {
     print('✅FeedViewModel fetchFeeds');
     if (_isLast) return;
 
-    final fetchTeamFeedsUsecase = ref.read(fetchTeamFeedsUsecaseProvider);
+    final fetchMercenaryFeedsUsecase =
+        ref.read(fetchMercenaryFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
+
     print('😍');
     print('feedIds : $feedIds');
     print('😍');
-    // final nextFeeds = await fetchFeedsUsecase.execute(_lastId, feedIds);
-    final nextFeeds = await fetchTeamFeedsUsecase.execute(
+
+    final nextFeeds = await fetchMercenaryFeedsUsecase.execute(
       lastId: _lastId,
       ignoreIds: feedIds,
       location: _location,
@@ -59,11 +61,11 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     state = [...state, ...nextFeeds];
   }
 
-  void streamFetchTeamFeeds() {
-    print('✅FeedViewModel streamFetchFeeds');
-    final streamFetchTeamFeedsUsecase =
-        ref.read(streamFetchTeamFeedsUsecaseProvider);
-    final streamFeedList = streamFetchTeamFeedsUsecase.execute();
+  void streamFetchMercenaryFeeds() {
+    print('✅MercenaryFeedViewModel streamFetchMercenaryFeeds');
+    final streamFetchMercenaryFeedsUsecase =
+        ref.read(streamFetchMercenaryFeedsUsecaseProvider);
+    final streamFeedList = streamFetchMercenaryFeedsUsecase.execute();
 
     final streamSubscription = streamFeedList.listen((feeds) {
       state = feeds;
@@ -77,24 +79,30 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     });
   }
 
-  Future<void> fetchTeamFeedLogs(String uid) async {
-    final fetchTeamFeedLogsUsecase = ref.read(fetchTeamFeedLogsUsecaseProvider);
-    _feedLog = await fetchTeamFeedLogsUsecase.execute(uid);
+  Future<void> fetchMercenaryFeedLogs(String uid) async {
+    final fetchMercenaryFeedLogsUsecase =
+        ref.read(fetchMercenaryFeedLogsUsecaseProvider);
+    _feedLog = await fetchMercenaryFeedLogsUsecase.execute(uid);
   }
 
-  Future<void> insertTeamFeedLog({
+  Future<void> insertMercenaryFeedLog({
     required String uid,
     required String feedId,
     required bool isApplicant,
   }) async {
-    final insertTeamFeedLogUsecase = ref.read(insertTeamFeedLogUsecaseProvider);
-    await insertTeamFeedLogUsecase.execute(uid, feedId, isApplicant);
+    final insertMercenaryFeedLogUsecase =
+        ref.read(insertMercenaryFeedLogUsecaseProvider);
+    await insertMercenaryFeedLogUsecase.execute(
+      uid,
+      feedId,
+      isApplicant,
+    );
   }
 }
 
-final teamFeedViewModelProvider =
-    NotifierProvider<TeamFeedViewModel, List<TeamFeed>>(
+final mercenaryFeedViewModelProvider =
+    NotifierProvider<MercenaryFeedViewModel, List<MercenaryFeed>>(
   () {
-    return TeamFeedViewModel();
+    return MercenaryFeedViewModel();
   },
 );

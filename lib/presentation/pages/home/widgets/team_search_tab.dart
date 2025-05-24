@@ -7,23 +7,21 @@ import 'package:mercenaryhub/presentation/pages/home/widgets/post_text.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/state_icons.dart';
 import 'package:swipable_stack/swipable_stack.dart';
 
-class TeamSarchTab extends ConsumerStatefulWidget {
-  List<int> feeds;
-
-  TeamSarchTab({super.key, required this.feeds});
+class TeamSearchTab extends ConsumerStatefulWidget {
+  const TeamSearchTab({super.key});
 
   @override
-  ConsumerState<TeamSarchTab> createState() => _TeamSarchTabState();
+  ConsumerState<TeamSearchTab> createState() => _TeamSarchTabState();
 }
 
-class _TeamSarchTabState extends ConsumerState<TeamSarchTab> {
+class _TeamSarchTabState extends ConsumerState<TeamSearchTab> {
   final swipableStackController = SwipableStackController();
   @override
   Widget build(BuildContext context) {
-    final feedList = ref.watch(feedViewModelProvider);
-    final feedVm = ref.read(feedViewModelProvider.notifier);
+    final feedList = ref.watch(teamFeedViewModelProvider);
+    final feedVm = ref.read(teamFeedViewModelProvider.notifier);
     print('✌️');
-    print('피드 변경');
+    print('팀 찾기 피드');
     print('✌️');
     return Container(
       color: Color(0xff2B2B2B),
@@ -37,7 +35,6 @@ class _TeamSarchTabState extends ConsumerState<TeamSarchTab> {
           // 스와이프가 완료되면, 즉 현재 이미지가 사라지면 발생하는 이벤트
           onSwipeCompleted: (index, direction) {
             print('카드 $index가 $direction으로 스와이프됨');
-            print(direction == 'left');
             print(feedList[index].teamName);
 
             // TODO: uid로 하기

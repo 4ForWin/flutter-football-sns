@@ -1,32 +1,31 @@
-import 'package:mercenaryhub/data/data_source/team_feed_data_source.dart';
-import 'package:mercenaryhub/domain/entity/team_feed.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_data_source.dart';
+import 'package:mercenaryhub/domain/entity/mercenary_feed.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
-import 'package:mercenaryhub/domain/repository/team_feed_repository.dart';
+import 'package:mercenaryhub/domain/repository/mercenary_feed_repository.dart';
 
-class TeamFeedRepositoryImpl implements TeamFeedRepository {
-  final TeamFeedDataSource _teamFeedDataSource;
+class MercenaryFeedRepositoryImpl implements MercenaryFeedRepository {
+  final MercenaryFeedDataSource _mercenaryFeedDataSource;
 
-  TeamFeedRepositoryImpl(this._teamFeedDataSource);
+  MercenaryFeedRepositoryImpl(this._mercenaryFeedDataSource);
 
   @override
-  Future<List<TeamFeed>> fetchTeamFeeds({
+  Future<List<MercenaryFeed>> fetchMercenaryFeeds({
     required String? lastId,
     required List<String> ignoreIds,
     required String? location,
   }) async {
-    final feedDtoList = await _teamFeedDataSource.fetchTeamFeeds(
+    final feedDtoList = await _mercenaryFeedDataSource.fetchMercenaryFeeds(
       lastId: lastId,
       ignoreIds: ignoreIds,
       location: location,
     );
 
     return feedDtoList.map((feedDto) {
-      return TeamFeed(
+      return MercenaryFeed(
         id: feedDto.id,
         cost: feedDto.cost,
-        person: feedDto.person,
         imageUrl: feedDto.imageUrl,
-        teamName: feedDto.teamName,
+        name: feedDto.name,
         location: feedDto.location,
         level: feedDto.level,
         date: DateTime.parse(feedDto.date),
@@ -37,22 +36,20 @@ class TeamFeedRepositoryImpl implements TeamFeedRepository {
   }
 
   @override
-  Future<bool> insertTeamFeed({
+  Future<bool> insertMercenaryFeed({
     required String cost,
-    required String person,
     required String imageUrl,
-    required String teamName,
+    required String name,
     required String location,
     required String level,
     required DateTime date,
     required TimeState time,
     required String content,
   }) async {
-    bool isComplete = await _teamFeedDataSource.insertTeamFeed(
+    bool isComplete = await _mercenaryFeedDataSource.insertMercenaryFeed(
       cost: cost,
-      person: person,
       imageUrl: imageUrl,
-      teamName: teamName,
+      name: name,
       location: location,
       level: level,
       date: date,
@@ -63,17 +60,17 @@ class TeamFeedRepositoryImpl implements TeamFeedRepository {
   }
 
   @override
-  Stream<List<TeamFeed>> streamFetchTeamFeeds() {
-    final streamFeedDtoList = _teamFeedDataSource.streamFetchTeamFeeds();
+  Stream<List<MercenaryFeed>> streamFetchMercenaryFeeds() {
+    final streamFeedDtoList =
+        _mercenaryFeedDataSource.streamFetchMercenaryFeeds();
 
     return streamFeedDtoList.map((feedDtoList) {
       return feedDtoList.map((feedDto) {
-        return TeamFeed(
+        return MercenaryFeed(
           id: feedDto.id,
           cost: feedDto.cost,
-          person: feedDto.person,
           imageUrl: feedDto.imageUrl,
-          teamName: feedDto.teamName,
+          name: feedDto.name,
           location: feedDto.location,
           level: feedDto.level,
           date: DateTime.parse(feedDto.date),

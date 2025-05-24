@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_data_source.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_data_source_impl.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_log_data_source.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_log_data_source_impl.dart';
 import 'package:mercenaryhub/data/data_source/team_feed_data_source.dart';
 import 'package:mercenaryhub/data/data_source/team_feed_data_source_impl.dart';
 import 'package:mercenaryhub/data/data_source/team_feed_log_data_source.dart';
@@ -11,16 +15,22 @@ import 'package:mercenaryhub/data/data_source/team_apply_history_data_source.dar
 import 'package:mercenaryhub/data/data_source/team_apply_history_data_source_impl.dart';
 import 'package:mercenaryhub/data/data_source/mercenary_apply_history_data_source.dart';
 import 'package:mercenaryhub/data/data_source/mercenary_apply_history_data_source_impl.dart';
+import 'package:mercenaryhub/data/repository/mercenary_feed_log_repository_impl.dart';
+import 'package:mercenaryhub/data/repository/mercenary_feed_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_feed_log_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_feed_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/location_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_apply_history_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/mercenary_apply_history_repository_impl.dart';
+import 'package:mercenaryhub/domain/repository/mercenary_feed_log_repository.dart';
+import 'package:mercenaryhub/domain/repository/mercenary_feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_feed_log_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/location_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_apply_history_repository.dart';
 import 'package:mercenaryhub/domain/repository/mercenary_apply_history_repository.dart';
+import 'package:mercenaryhub/domain/usecase/fetch_mercenary_feed_logs_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/fetch_mercenary_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_feed_logs_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_feeds_usecase.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,8 +39,11 @@ import 'package:mercenaryhub/data/data_source/image_data_source_impl.dart';
 import 'package:mercenaryhub/data/repository/image_repository_impl.dart';
 import 'package:mercenaryhub/domain/repository/image_repository.dart';
 import 'package:mercenaryhub/domain/usecase/get_location_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/insert_mercenary_feed_log_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/insert_mercenary_feed_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/insert_team_feed_log_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/insert_team_feed_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/stream_fetch_mercenary_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/stream_fetch_team_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/upload_image_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_apply_histories_usecase.dart';
@@ -38,6 +51,7 @@ import 'package:mercenaryhub/domain/usecase/update_team_apply_status_usecase.dar
 import 'package:mercenaryhub/domain/usecase/fetch_mercenary_apply_histories_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/cancel_mercenary_apply_usecase.dart';
 
+// teamFeed 관련
 final _teamFeedDataSourceProvider = Provider<TeamFeedDataSource>((ref) {
   return TeamFeedDataSourceImpl(FirebaseFirestore.instance);
 });
@@ -81,6 +95,55 @@ final insertTeamFeedLogUsecaseProvider = Provider((ref) {
   return InsertTeamFeedLogUsecase(repository);
 });
 
+// mercenaryFeed 관련
+final _mercenaryFeedDataSourceProvider =
+    Provider<MercenaryFeedDataSource>((ref) {
+  return MercenaryFeedDataSourceImpl(FirebaseFirestore.instance);
+});
+
+final _mercenaryFeedRepositoryProvider =
+    Provider<MercenaryFeedRepository>((ref) {
+  final dataSource = ref.read(_mercenaryFeedDataSourceProvider);
+  return MercenaryFeedRepositoryImpl(dataSource);
+});
+
+final fetchMercenaryFeedsUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_mercenaryFeedRepositoryProvider);
+  return FetchMercenaryFeedsUsecase(repository);
+});
+
+final insertMercenaryFeedUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_mercenaryFeedRepositoryProvider);
+  return InsertMercenaryFeedUsecase(repository);
+});
+
+final streamFetchMercenaryFeedsUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_mercenaryFeedRepositoryProvider);
+  return StreamFetchMercenaryFeedsUsecase(repository);
+});
+
+final _mercenaryFeedLogDataSourceProvider =
+    Provider<MercenaryFeedLogDataSource>((ref) {
+  return MercenaryFeedLogDataSourceImpl(FirebaseFirestore.instance);
+});
+
+final _mercenaryFeedLogRepositoryProvider =
+    Provider<MercenaryFeedLogRepository>((ref) {
+  final dataSource = ref.read(_mercenaryFeedLogDataSourceProvider);
+  return MercenaryFeedLogRepositoryImpl(dataSource);
+});
+
+final fetchMercenaryFeedLogsUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_mercenaryFeedLogRepositoryProvider);
+  return FetchMercenaryFeedLogsUsecase(repository);
+});
+
+final insertMercenaryFeedLogUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_mercenaryFeedLogRepositoryProvider);
+  return InsertMercenaryFeedLogUsecase(repository);
+});
+
+// 이미지 업로드 관련
 final _imageDataSourceProvider = Provider<ImageDataSource>((ref) {
   return ImageDataSourceImpl(FirebaseStorage.instance);
 });
@@ -95,19 +158,18 @@ final uploadImageUsecaseProvider = Provider((ref) {
   return UploadImageUsecase(repository);
 });
 
-final _locationDataSourceProvider = Provider<LocationDataSource>(
-  (ref) {
-    return LocationDataSourceImpl(Dio());
-  },
-);
+// 위치 찾기 관련
+final _locationDataSourceProvider = Provider<LocationDataSource>((ref) {
+  return LocationDataSourceImpl(Dio());
+});
 
-final _locationRepository = Provider<LocationRepository>((ref) {
+final _locationRepositoryProvider = Provider<LocationRepository>((ref) {
   final dataSource = ref.read(_locationDataSourceProvider);
   return LocationRepositoryImpl(dataSource);
 });
 
 final getLocationUsecaseProvider = Provider((ref) {
-  final repository = ref.read(_locationRepository);
+  final repository = ref.read(_locationRepositoryProvider);
   return GetLocationUsecase(repository);
 });
 

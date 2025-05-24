@@ -1,4 +1,4 @@
-import 'package:mercenaryhub/domain/entity/feed_log.dart';
+import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
 import 'package:mercenaryhub/domain/repository/team_feed_log_repository.dart';
 
 class FetchTeamFeedLogsUsecase {
@@ -6,7 +6,7 @@ class FetchTeamFeedLogsUsecase {
 
   FetchTeamFeedLogsUsecase(this._teamFeedLogRepository);
 
-  Future<List<FeedLog>> execute(String uid) async {
+  Future<List<TeamFeedLog>> execute(String uid) async {
     return await _teamFeedLogRepository.fetchTeamFeedLogs(uid);
   }
 }

@@ -1,15 +1,15 @@
-class FeedLogDto {
+class TeamFeedLogDto {
   final String feedId;
   final bool isApplicant;
   final String uid;
 
-  FeedLogDto({
+  TeamFeedLogDto({
     required this.feedId,
     required this.isApplicant,
     required this.uid,
   });
 
-  factory FeedLogDto.fromJson(Map<String, dynamic> json) => FeedLogDto(
+  factory TeamFeedLogDto.fromJson(Map<String, dynamic> json) => TeamFeedLogDto(
         feedId: json["feedId"],
         isApplicant: json["isApplicant"],
         uid: json["uid"],

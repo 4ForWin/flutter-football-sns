@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mercenaryhub/data/data_source/team_feed_data_source.dart';
-import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
+import 'package:mercenaryhub/data/data_source/mercenary_feed_data_source.dart';
+import 'package:mercenaryhub/data/dto/mercenary_feed_dto.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 
-class TeamFeedDataSourceImpl implements TeamFeedDataSource {
+class MercenaryFeedDataSourceImpl implements MercenaryFeedDataSource {
   final FirebaseFirestore _firestoreInstance; // FirebaseFirestore.instance;
 
-  TeamFeedDataSourceImpl(this._firestoreInstance);
+  MercenaryFeedDataSourceImpl(this._firestoreInstance);
 
   @override
-  Future<List<TeamFeedDto>> fetchTeamFeeds({
+  Future<List<MercenaryFeedDto>> fetchMercenaryFeeds({
     required String? lastId,
     required List<String> ignoreIds,
     required String? location,
   }) async {
     try {
       var collectionQuery = _firestoreInstance
-          .collection('teamFeeds')
+          .collection('mercenaryFeeds')
           // TODO: 나중에 본인 uid 아닌 것들을 가져오기
           // .where('uid', whereNotIn: [uid])
           .where('location', isEqualTo: location)
@@ -30,8 +30,10 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
 
       if (lastId != null) {
         print('✅피드 데이터 소스 : $lastId');
-        final lastDoc =
-            await _firestoreInstance.collection('teamFeeds').doc(lastId).get();
+        final lastDoc = await _firestoreInstance
+            .collection('mercenaryFeeds')
+            .doc(lastId)
+            .get();
         collectionQuery = collectionQuery.startAfterDocument(lastDoc);
       }
 
@@ -40,21 +42,20 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
       return docs.map((doc) {
         final map = doc.data();
         final newMap = {'id': doc.id, ...map};
-        return TeamFeedDto.fromJson(newMap);
+        return MercenaryFeedDto.fromJson(newMap);
       }).toList();
     } catch (e, s) {
-      print('❌fetchTeamFeeds e: $e');
-      print('❌fetchTeamFeeds s: $s');
+      print('❌fetchMercenaryFeeds e: $e');
+      print('❌fetchMercenaryFeeds s: $s');
       return [];
     }
   }
 
   @override
-  Future<bool> insertTeamFeed({
+  Future<bool> insertMercenaryFeed({
     required String cost,
-    required String person,
     required String imageUrl,
-    required String teamName,
+    required String name,
     required String location,
     required String level,
     required DateTime date,
@@ -62,15 +63,14 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
     required String content,
   }) async {
     try {
-      final collectionRef = _firestoreInstance.collection('teamFeeds');
+      final collectionRef = _firestoreInstance.collection('mercenaryFeeds');
       DocumentReference documentRef = collectionRef.doc();
 
       await documentRef.set({
         'uid': FirebaseAuth.instance.currentUser?.uid,
         'cost': cost,
-        'person': person,
         'imageUrl': imageUrl,
-        'teamName': teamName,
+        'name': name,
         'location': location,
         'createAt': DateTime.now().toIso8601String(),
         'level': level,
@@ -82,31 +82,27 @@ class TeamFeedDataSourceImpl implements TeamFeedDataSource {
 
       return true;
     } catch (e, s) {
-      print('❌insertTeamFeed e: $e');
-      print('❌insertTeamFeed s: $s');
+      print('❌insertMercenaryFeed e: $e');
+      print('❌insertMercenaryFeed s: $s');
       return false;
     }
   }
 
   @override
-  Stream<List<TeamFeedDto>> streamFetchTeamFeeds() {
+  Stream<List<MercenaryFeedDto>> streamFetchMercenaryFeeds() {
     // orderBy('createAt', descending: true); - createAt속성을 기준으로 정렬.
     // descending == true : 내림차순
     // descending == false : 오름차순
     final collectionRef = _firestoreInstance
-        .collection('teamFeeds')
+        .collection('mercenaryFeeds')
         .orderBy('createAt', descending: true);
     final stream = collectionRef.snapshots();
 
     return stream.map((event) {
-      print('✅event');
-      print(event.docs[0].data());
-      print(event.docs[1].data());
-      print(event.docs[2].data());
       return event.docs.map((doc) {
         final map = doc.data();
         final newMap = {'id': doc.id, ...map};
-        return TeamFeedDto.fromJson(newMap);
+        return MercenaryFeedDto.fromJson(newMap);
       }).toList();
     });
   }
