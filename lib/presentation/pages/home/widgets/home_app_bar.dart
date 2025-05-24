@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
-import 'package:mercenaryhub/presentation/pages/home/view_models/feed_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/team_feed_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/feed_type_dialog.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_page.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';

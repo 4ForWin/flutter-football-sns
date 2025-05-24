@@ -209,7 +209,7 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
     required String person,
     required String content,
   }) async {
-    final insertFeedUsecase = ref.read(insertFeedUsecaseProvider);
+    final insertFeedUsecase = ref.read(insertTeamFeedUsecaseProvider);
     bool isComplete = await insertFeedUsecase.execute(
       location: state.location!,
       teamName: teamName,
