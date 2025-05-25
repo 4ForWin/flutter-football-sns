@@ -1,18 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mercenaryhub/data/data_source/my_mercenary_invitation_history_data_source.dart';
 import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source.dart';
+import 'package:mercenaryhub/data/dto/my_mercenary_invitation_history_dto.dart';
 import 'package:mercenaryhub/data/dto/my_team_application_history_dto.dart';
 import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 
-class MyTeamApplicationHistoryDataSourceImpl
-    implements MyTeamApplicationHistoryDataSource {
+class MyMercenaryInvitationHistoryDataSourceImpl
+    implements MyMercenaryInvitationHistoryDataSource {
   final FirebaseFirestore _firebaseFirestore;
 
-  MyTeamApplicationHistoryDataSourceImpl(this._firebaseFirestore);
+  MyMercenaryInvitationHistoryDataSourceImpl(this._firebaseFirestore);
 
   @override
-  Future<List<MyTeamApplicationHistoryDto>> fetchApplicationHistories() async {
+  Future<List<MyMercenaryInvitationHistoryDto>>
+      fetchInvitationHistories() async {
     try {
       final userMap = (await _firebaseFirestore
               .collection('users')
@@ -20,15 +23,15 @@ class MyTeamApplicationHistoryDataSourceImpl
               .get())
           .data();
 
-      final applicationList =
-          List<Map<String, dynamic>>.from(userMap!['teamApplicationHistory']);
+      final invitationList = List<Map<String, dynamic>>.from(
+          userMap!['mercenaryInvitationHistory']);
       print('🥰🥰🥰🥰🥰🥰🥰');
-      print(applicationList);
+      print(invitationList);
       print('🥰🥰🥰🥰🥰🥰🥰');
 
-      if (applicationList != null) {
-        return applicationList.map((feedMap) {
-          return MyTeamApplicationHistoryDto.fromJson(feedMap);
+      if (invitationList != null) {
+        return invitationList.map((feedMap) {
+          return MyMercenaryInvitationHistoryDto.fromJson(feedMap);
         }).toList();
       }
 
@@ -41,8 +44,8 @@ class MyTeamApplicationHistoryDataSourceImpl
       //   });
       // }).toList();
     } catch (e, s) {
-      print('❌fetchMercenaryApplyHistories error: $e');
-      print('❌fetchMercenaryApplyHistories error: $s');
+      print('❌fetchInvitationHistories error: $e');
+      print('❌fetchInvitationHistories error: $s');
       return [];
     }
   }
@@ -87,11 +90,13 @@ class MyTeamApplicationHistoryDataSourceImpl
   // }
 
   @override
-  void applyToTeam(String feedId) async {
+  void inviteToMercenary(String feedId) async {
     // 인자를 Feed타입으로 받고 싶은데 그러면 의존성 때문에 안될까 싶어 feedId로 하는 중
-    final feed =
-        (await _firebaseFirestore.collection('teamFeeds').doc(feedId).get())
-            .data();
+    final feed = (await _firebaseFirestore
+            .collection('mercenaryFeeds')
+            .doc(feedId)
+            .get())
+        .data();
 
     final docRef = _firebaseFirestore
         .collection('users')
@@ -104,7 +109,7 @@ class MyTeamApplicationHistoryDataSourceImpl
     feed['status'] = 'pending';
 
     await docRef.update({
-      'teamApplicationHistory': FieldValue.arrayUnion([feed])
+      'mercenaryInvitationHistory': FieldValue.arrayUnion([feed])
     });
   }
 }

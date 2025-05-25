@@ -101,11 +101,20 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
       ),
     ];
 
-    await insertMercenaryFeedLogUsecase.execute(
-      uid,
-      feedId,
-      isApplicant,
-    );
+    await insertMercenaryFeedLogUsecase.execute(uid, feedId, isApplicant);
+
+    // 신청(초대)으로 스와이프 했으면 'users/userId/mercenaryInvitationHistory'으로 데이터 보내기
+    if (isApplicant) {
+      final InviteToMercenaryUsecase =
+          ref.read(inviteToMercenaryUsecaseProvider);
+
+      InviteToMercenaryUsecase.execute(feedId);
+    }
+  }
+
+  void removeFeedOfState() {
+    state.removeAt(0);
+    state = [...state];
   }
 }
 

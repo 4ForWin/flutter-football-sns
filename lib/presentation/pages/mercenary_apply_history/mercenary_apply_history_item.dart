@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mercenaryhub/domain/entity/my_mercenary_invitation_history.dart';
 import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
 
 class MercenaryApplyHistoryItem extends StatelessWidget {
-  final MyTeamApplicationHistory history;
+  final MyMercenaryInvitationHistory history;
   final VoidCallback onCancel;
 
   const MercenaryApplyHistoryItem({
@@ -49,7 +50,7 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      history.teamName,
+                      history.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

@@ -1,19 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mercenaryhub/domain/entity/my_mercenary_invitation_history.dart';
 import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
-class MyTeamApplicationHistoryViewModel
-    extends AsyncNotifier<List<MyTeamApplicationHistory>> {
+class MyMercenaryInvitationHistoryViewModel
+    extends AsyncNotifier<List<MyMercenaryInvitationHistory>> {
   @override
-  Future<List<MyTeamApplicationHistory>> build() async {
-    return await fetchApplicationHistories();
+  Future<List<MyMercenaryInvitationHistory>> build() async {
+    return await fetchInvitationHistories();
   }
 
-  Future<List<MyTeamApplicationHistory>> fetchApplicationHistories() async {
+  Future<List<MyMercenaryInvitationHistory>> fetchInvitationHistories() async {
     await Future.delayed(const Duration(milliseconds: 500)); // 로딩 시뮬레이션
-    final fetchApplicationHistoriesUsecase =
-        ref.read(fetchApplicationHistoriesUsecaseProvider);
-    return await fetchApplicationHistoriesUsecase.execute();
+    final fetchInvitationHistoriesUsecase =
+        ref.read(fetchInvitationHistoriesUsecaseProvider);
+    return await fetchInvitationHistoriesUsecase.execute();
     // return [
     //   MercenaryApplyHistory(
     //     id: 'dummy-apply-1',
@@ -67,7 +68,7 @@ class MyTeamApplicationHistoryViewModel
 //   }
 }
 
-final myTeamApplicationHistoryViewModelProvider = AsyncNotifierProvider<
-    MyTeamApplicationHistoryViewModel, List<MyTeamApplicationHistory>>(
-  () => MyTeamApplicationHistoryViewModel(),
+final myMercenaryInvitationHistoryViewModelProvider = AsyncNotifierProvider<
+    MyMercenaryInvitationHistoryViewModel, List<MyMercenaryInvitationHistory>>(
+  () => MyMercenaryInvitationHistoryViewModel(),
 );

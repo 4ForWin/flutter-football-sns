@@ -8,7 +8,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(myTeamApplicationHistoryViewModelProvider);
+    final state = ref.watch(myMercenaryInvitationHistoryViewModelProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -50,7 +50,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(myTeamApplicationHistoryViewModelProvider);
+              ref.invalidate(myMercenaryInvitationHistoryViewModelProvider);
             },
             color: const Color(0xFF2BBB7D),
             child: ListView.separated(
@@ -95,7 +95,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () {
-                  ref.invalidate(myTeamApplicationHistoryViewModelProvider);
+                  ref.invalidate(myMercenaryInvitationHistoryViewModelProvider);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2BBB7D),
