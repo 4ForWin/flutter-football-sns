@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
 class LevelDropdownFormField extends StatelessWidget {
-  String typeText;
+  final String typeText;
 
-  LevelDropdownFormField({
+  const LevelDropdownFormField({
     super.key,
     required this.typeText,
   });

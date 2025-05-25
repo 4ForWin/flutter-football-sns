@@ -9,8 +9,10 @@ class PostButton extends StatelessWidget {
   final TextEditingController costTextController;
   final TextEditingController personTextController;
   final TextEditingController teamTextController;
+  final TextEditingController nameTextController;
   final TextEditingController contentTextController;
   final LoadingOverlay loadingOverlay;
+  final String typeText;
 
   const PostButton({
     super.key,
@@ -19,8 +21,10 @@ class PostButton extends StatelessWidget {
     required this.costTextController,
     required this.personTextController,
     required this.teamTextController,
+    required this.nameTextController,
     required this.contentTextController,
     required this.loadingOverlay,
+    required this.typeText,
   });
 
   @override
@@ -39,13 +43,30 @@ class PostButton extends StatelessWidget {
                 print('유효성 검사 완료');
                 loadingOverlay.show(context);
                 await writeVm.uploadImage();
-                bool isComplte = await writeVm.insertFeed(
-                  teamName: teamTextController.text.trim(),
-                  cost: costTextController.text.trim(),
-                  person: personTextController.text.trim(),
-                  content: contentTextController.text.trim(),
-                );
-                if (isComplte) {
+                bool? isComplete;
+
+                switch (typeText) {
+                  case '용병':
+                    isComplete = await writeVm.insertMercenaryFeed(
+                      name: nameTextController.text.trim(),
+                      cost: costTextController.text.trim(),
+                      content: contentTextController.text.trim(),
+                    );
+                    break;
+
+                  case '팀':
+                    isComplete = await writeVm.insertTeamFeed(
+                      teamName: teamTextController.text.trim(),
+                      cost: costTextController.text.trim(),
+                      person: personTextController.text.trim(),
+                      content: contentTextController.text.trim(),
+                    );
+                    break;
+                  default:
+                    break;
+                }
+
+                if (isComplete == true) {
                   print('✅ 게시 완료');
                   loadingOverlay.hide();
                   Navigator.pop(context);

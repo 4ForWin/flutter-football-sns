@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mercenaryhub/domain/entity/mercenary_apply_history.dart';
+import 'package:mercenaryhub/domain/entity/my_mercenary_invitation_history.dart';
 
 class MercenaryApplyHistoryItem extends StatelessWidget {
-  final MercenaryApplyHistory history;
-  final VoidCallback onCancel;
+  final MyMercenaryInvitationHistory history;
+  final Function(String status) onStatusUpdate;
 
   const MercenaryApplyHistoryItem({
     super.key,
     required this.history,
-    required this.onCancel,
+    required this.onStatusUpdate,
   });
 
   @override
@@ -17,7 +17,7 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!),
         boxShadow: [
@@ -36,11 +36,11 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: history.teamProfileImage.isNotEmpty
-                    ? NetworkImage(history.teamProfileImage)
+                backgroundImage: history.imageUrl.isNotEmpty
+                    ? NetworkImage(history.imageUrl)
                     : null,
-                child: history.teamProfileImage.isEmpty
-                    ? const Icon(Icons.groups, color: Colors.grey)
+                child: history.imageUrl.isEmpty
+                    ? const Icon(Icons.person, color: Colors.grey)
                     : null,
               ),
               const SizedBox(width: 12),
@@ -49,7 +49,7 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      history.teamName,
+                      history.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '신청일: ${DateFormat('yyyy.MM.dd').format(history.appliedAt)}',
+                      '초대일: ${DateFormat('yyyy.MM.dd').format(history.appliedAt)}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -84,10 +84,11 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                 const SizedBox(height: 8),
                 _buildInfoRow(
                   Icons.calendar_today,
-                  DateFormat('yyyy년 MM월 dd일').format(history.gameDate),
+                  DateFormat('yyyy년 MM월 dd일').format(history.date),
                 ),
                 const SizedBox(height: 8),
-                _buildInfoRow(Icons.access_time, history.gameTime),
+                _buildInfoRow(Icons.access_time,
+                    '${DateFormat('HH:mm').format(history.time.start!)} ~ ${DateFormat('HH:mm').format(history.time.end!)}'),
                 const SizedBox(height: 8),
                 _buildInfoRow(Icons.military_tech, history.level),
                 const SizedBox(height: 8),
@@ -98,12 +99,16 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
               ],
             ),
           ),
+
+          // 초대 취소 버튼 (pending 상태일 때만 표시)
           if (history.status == 'pending') ...[
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: onCancel,
+                onPressed: () {
+                  onStatusUpdate('cancelled');
+                },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
                   side: const BorderSide(color: Colors.red),
@@ -111,7 +116,39 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text('신청 취소'),
+                child: const Text('초대 취소'),
+              ),
+            ),
+          ],
+
+          // 상태 변경 알림
+          if (history.status != 'pending') ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: _getStatusColor(history.status).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    _getStatusIcon(history.status),
+                    size: 16,
+                    color: _getStatusColor(history.status),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _getStatusMessage(history.status),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _getStatusColor(history.status),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -178,14 +215,55 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
           color: Colors.grey[600],
         ),
         const SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[800],
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[800],
+            ),
           ),
         ),
       ],
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'accepted':
+        return Colors.green;
+      case 'rejected':
+        return Colors.red;
+      case 'cancelled':
+        return Colors.grey;
+      default:
+        return Colors.orange;
+    }
+  }
+
+  IconData _getStatusIcon(String status) {
+    switch (status) {
+      case 'accepted':
+        return Icons.check_circle;
+      case 'rejected':
+        return Icons.cancel;
+      case 'cancelled':
+        return Icons.remove_circle;
+      default:
+        return Icons.schedule;
+    }
+  }
+
+  String _getStatusMessage(String status) {
+    switch (status) {
+      case 'accepted':
+        return '용병이 초대를 수락했습니다';
+      case 'rejected':
+        return '용병이 초대를 거절했습니다';
+      case 'cancelled':
+        return '초대가 취소되었습니다';
+      default:
+        return '응답 대기 중입니다';
+    }
   }
 }

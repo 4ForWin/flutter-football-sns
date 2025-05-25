@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mercenaryhub/data/dto/feed_dto.dart';
+import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
 
 void main() {
   test('feed dto test', () async {
@@ -16,7 +16,7 @@ void main() {
 
     final feedMap =
         jsonDecode(File('test/dummy/feed_dto.json').readAsStringSync());
-    final feed = FeedDto.fromJson(feedMap);
+    final feed = TeamFeedDto.fromJson(feedMap);
 
     expect(feed.id, 'id');
     expect(feed.title, 'title');

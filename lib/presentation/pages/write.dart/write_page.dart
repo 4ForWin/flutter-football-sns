@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/content_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/cost_text_form_field.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_icon.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/level_dropdown_form_field.dart';
@@ -15,7 +14,6 @@ import 'package:mercenaryhub/presentation/pages/write.dart/widgets/location_icon
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/location_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/post_button.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/team_text_form_field.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_icon.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_text_form_field.dart';
 
@@ -67,7 +65,6 @@ class _WritePageState extends ConsumerState<WritePage> {
     print('❤️❤️❤️❤️');
     print(widget.typeText);
     print('❤️❤️❤️❤️');
-    ;
 
     final scaffoldPadding = MediaQuery.of(context).padding;
     return GestureDetector(
@@ -91,9 +88,11 @@ class _WritePageState extends ConsumerState<WritePage> {
                   costTextController: costTextController,
                   personTextController: personTextController,
                   teamTextController: teamTextController,
+                  nameTextController: nameTextController,
                   contentTextController: contentTextController,
                   loadingOverlay: loadingOverlay,
                   homeContext: widget.homeContext,
+                  typeText: widget.typeText,
                 ),
               ],
               actionsPadding: EdgeInsets.only(right: 20)),
