@@ -31,7 +31,7 @@ class TeamFeedState {
 class TeamFeedViewModel extends Notifier<TeamFeedState> {
   @override
   build() {
-    print('✅TeamFeedViewModel build');
+    print('TeamFeedViewModel build');
     // streamFetchFeeds();
     // fetchFeeds();
     initialize();
@@ -74,7 +74,7 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
   }
 
   void fetchTeamFeeds() async {
-    print('✅FeedViewModel fetchFeeds');
+    print('FeedViewModel fetchFeeds');
     // if (_isLast) return;
 
     final fetchTeamFeedsUsecase = ref.read(fetchTeamFeedsUsecaseProvider);
@@ -104,7 +104,7 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
   }
 
   void streamFetchTeamFeeds() {
-    print('✅FeedViewModel streamFetchFeeds');
+    print('FeedViewModel streamFetchFeeds');
     final streamFetchTeamFeedsUsecase =
         ref.read(streamFetchTeamFeedsUsecaseProvider);
     final streamFeedList = streamFetchTeamFeedsUsecase.execute();
@@ -115,8 +115,6 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
 
     // 뷰모델이 메모리에서 소거될 때 onDispose의 callback이 호출 됨
     ref.onDispose(() {
-      // ✅✅ 호출되면 streamSubscription을 cancel 꼭 해줘야함.
-      // ✅✅ 그래야 구독이 종료된다.
       streamSubscription.cancel();
     });
   }
@@ -146,9 +144,10 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
 
     // 신청으로 스와이프 했으면 'users/userId/teamApplicationHistory'으로 데이터 보내기
     if (isApplicant) {
-      final applyToTeamUsecase = ref.read(applyToTeamUsecaseProvider);
+      print('🔥 팀 신청 프로세스 시작 - feedId: $feedId');
 
-      applyToTeamUsecase.execute(feedId);
+      final applyToTeamUsecase = ref.read(applyToTeamUsecaseProvider);
+      final success = await applyToTeamUsecase.execute(feedId);
     }
   }
 

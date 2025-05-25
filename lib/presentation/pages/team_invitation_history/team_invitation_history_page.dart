@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_item.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/team_invitation_history/team_invitation_history_item.dart';
+import 'package:mercenaryhub/presentation/pages/team_invitation_history/team_invitation_history_view_model.dart';
 
-class MercenaryApplyHistoryPage extends ConsumerWidget {
-  const MercenaryApplyHistoryPage({super.key});
+class TeamInvitationHistoryPage extends ConsumerWidget {
+  const TeamInvitationHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(myMercenaryInvitationHistoryViewModelProvider);
+    final state = ref.watch(teamInvitationHistoryViewModelProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -16,7 +16,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFFFFFFF),
         foregroundColor: const Color(0xFF222222),
         elevation: 0,
-        title: const Text('내가 초대한 용병'),
+        title: const Text('나를 초대한 팀'),
         shape: Border(
           bottom: BorderSide(
             color: Colors.grey[300]!,
@@ -27,8 +27,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
           IconButton(
             onPressed: () {
               ref
-                  .read(myMercenaryInvitationHistoryViewModelProvider.notifier)
-                  .refreshInvitationHistories();
+                  .read(teamInvitationHistoryViewModelProvider.notifier)
+                  .refreshTeamInvitations();
             },
             icon: const Icon(Icons.refresh),
             tooltip: '새로고침',
@@ -36,10 +36,10 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
         ],
       ),
       body: state.when(
-        data: (histories) {
-          print('📱 UI: ${histories.length}개의 초대 내역 표시');
+        data: (invitations) {
+          print('📱 UI: ${invitations.length}개의 팀 초대 내역 표시');
 
-          if (histories.isEmpty) {
+          if (invitations.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '초대내역이 없습니다',
+                    '받은 초대가 없습니다',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -61,9 +61,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                   ElevatedButton(
                     onPressed: () {
                       ref
-                          .read(myMercenaryInvitationHistoryViewModelProvider
-                              .notifier)
-                          .refreshInvitationHistories();
+                          .read(teamInvitationHistoryViewModelProvider.notifier)
+                          .refreshTeamInvitations();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2BBB7D),
@@ -81,32 +80,43 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async {
               await ref
-                  .read(myMercenaryInvitationHistoryViewModelProvider.notifier)
-                  .refreshInvitationHistories();
+                  .read(teamInvitationHistoryViewModelProvider.notifier)
+                  .refreshTeamInvitations();
             },
             color: const Color(0xFF2BBB7D),
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
-              itemCount: histories.length,
+              itemCount: invitations.length,
               separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
-                final history = histories[index];
-                return MercenaryApplyHistoryItem(
-                  history: history,
-                  onStatusUpdate: (status) {
-                    print(
-                        '📱 UI: 초대 상태 업데이트 요청 - ${history.feedId} -> $status');
-
-                    // 확인 다이얼로그 표시
-                    _showStatusUpdateDialog(
+                final invitation = invitations[index];
+                return TeamInvitationHistoryItem(
+                  invitation: invitation,
+                  onAccept: () {
+                    print('📱 UI: 초대 수락 요청 - ${invitation.feedId}');
+                    _showResponseDialog(
                       context,
-                      status,
-                      history.name,
+                      'accepted',
+                      invitation.teamName,
                       () {
                         ref
-                            .read(myMercenaryInvitationHistoryViewModelProvider
-                                .notifier)
-                            .updateInvitationStatus(history.feedId, status);
+                            .read(
+                                teamInvitationHistoryViewModelProvider.notifier)
+                            .acceptInvitation(invitation.feedId);
+                      },
+                    );
+                  },
+                  onReject: () {
+                    print('📱 UI: 초대 거절 요청 - ${invitation.feedId}');
+                    _showResponseDialog(
+                      context,
+                      'rejected',
+                      invitation.teamName,
+                      () {
+                        ref
+                            .read(
+                                teamInvitationHistoryViewModelProvider.notifier)
+                            .rejectInvitation(invitation.feedId);
                       },
                     );
                   },
@@ -126,7 +136,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  '초대 내역을 불러오는 중...',
+                  '팀 초대 내역을 불러오는 중...',
                   style: TextStyle(
                     fontSize: 16,
                     color: Color(0xFF222222),
@@ -168,9 +178,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () {
                     ref
-                        .read(myMercenaryInvitationHistoryViewModelProvider
-                            .notifier)
-                        .refreshInvitationHistories();
+                        .read(teamInvitationHistoryViewModelProvider.notifier)
+                        .refreshTeamInvitations();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2BBB7D),
@@ -188,36 +197,31 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
     );
   }
 
-  /// 상태 업데이트 확인 다이얼로그
-  void _showStatusUpdateDialog(
+  /// 응답 확인 다이얼로그
+  void _showResponseDialog(
     BuildContext context,
-    String status,
-    String mercenaryName,
+    String response,
+    String teamName,
     VoidCallback onConfirm,
   ) {
     String title;
     String message;
     Color actionColor;
 
-    switch (status) {
-      case 'cancelled':
-        title = '초대 취소';
-        message = '$mercenaryName님에 대한 초대를 취소하시겠습니까?';
-        actionColor = Colors.red;
-        break;
+    switch (response) {
       case 'accepted':
         title = '초대 수락';
-        message = '$mercenaryName님이 초대를 수락했습니다.';
+        message = '$teamName의 초대를 수락하시겠습니까?';
         actionColor = const Color(0xFF2BBB7D);
         break;
       case 'rejected':
         title = '초대 거절';
-        message = '$mercenaryName님이 초대를 거절했습니다.';
+        message = '$teamName의 초대를 거절하시겠습니까?';
         actionColor = Colors.red;
         break;
       default:
-        title = '상태 변경';
-        message = '상태를 변경하시겠습니까?';
+        title = '응답 처리';
+        message = '응답을 처리하시겠습니까?';
         actionColor = const Color(0xFF2BBB7D);
     }
 

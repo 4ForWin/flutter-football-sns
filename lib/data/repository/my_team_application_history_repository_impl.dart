@@ -10,11 +10,13 @@ class MyTeamApplicationHistoryRepositoryImpl
 
   @override
   Future<List<MyTeamApplicationHistory>> fetchApplicationHistories() async {
-    print('🚕🚕🚕🚕');
-    final dtoList = await _dataSource.fetchApplicationHistories();
+    try {
+      print('🚕 Repository: fetchApplicationHistories 호출');
+      final dtoList = await _dataSource.fetchApplicationHistories();
+      print('🚕 Repository: ${dtoList.length}개의 신청 내역 조회');
 
-    return dtoList.map((dto) {
-      return MyTeamApplicationHistory(
+      return dtoList.map((dto) {
+        return MyTeamApplicationHistory(
           teamName: dto.teamName,
           uid: dto.uid,
           feedId: dto.feedId,
@@ -25,42 +27,25 @@ class MyTeamApplicationHistoryRepositoryImpl
           date: DateTime.parse(dto.date),
           time: dto.time,
           appliedAt: DateTime.parse(dto.appliedAt),
-          status: dto.status);
-    }).toList();
+          status: dto.status,
+        );
+      }).toList();
+    } catch (e) {
+      print('❌ Repository fetchApplicationHistories error: $e');
+      return [];
+    }
   }
 
-  // @override
-  // Future<bool> cancelApply(String applyHistoryId) async {
-  //   return await _dataSource.cancelApply(applyHistoryId);
-  // }
-
-  // @override
-  // Future<MercenaryApplyHistory?> fetchMercenaryApplyHistoryById(
-  //     String applyHistoryId) async {
-  //   final dto =
-  //       await _dataSource.fetchMercenaryApplyHistoryById(applyHistoryId);
-
-  //   if (dto == null) return null;
-
-  //   return MercenaryApplyHistory(
-  //     id: dto.id,
-  //     userId: dto.userId,
-  //     teamId: dto.teamId,
-  //     teamName: dto.teamName,
-  //     teamProfileImage: dto.teamProfileImage,
-  //     feedId: dto.feedId,
-  //     appliedAt: DateTime.parse(dto.appliedAt),
-  //     status: dto.status,
-  //     location: dto.location,
-  //     gameDate: DateTime.parse(dto.gameDate),
-  //     gameTime: dto.gameTime,
-  //     cost: dto.cost,
-  //     level: dto.level,
-  //   );
-  // }
-
   @override
-  void applyToTeam(String feedId) {
-    _dataSource.applyToTeam(feedId);
+  Future<bool> applyToTeam(String feedId) async {
+    try {
+      print('🚕 Repository: applyToTeam 호출 - feedId: $feedId');
+      await _dataSource.applyToTeam(feedId);
+      print('🚕 Repository: 팀 신청 데이터 저장 완료');
+      return true;
+    } catch (e) {
+      print('❌ Repository applyToTeam error: $e');
+      return false;
+    }
   }
 }

@@ -4,13 +4,9 @@ abstract interface class MyTeamApplicationHistoryRepository {
   /// 용병이 팀에 신청한 내역 조회
   Future<List<MyTeamApplicationHistory>> fetchApplicationHistories();
 
-  // /// 신청 취소
+  /// 팀 합류 신청하기 - 수정: Future<bool> 반환하도록 변경
+  Future<bool> applyToTeam(String feedId);
+
+  /// 신청 취소 - 추후 구현 예정
   // Future<bool> cancelApply(String applyHistoryId);
-
-  // /// 특정 신청 내역 상세 조회
-  // Future<MercenaryApplyHistory?> fetchMercenaryApplyHistoryById(
-  //     String applyHistoryId);
-
-  /// 팀 합류 신청하기
-  void applyToTeam(String feedId);
 }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
+import 'package:mercenaryhub/domain/entity/mercenary_applicant.dart';
 
-class TeamApplyHistoryItem extends StatelessWidget {
-  final MyTeamApplicationHistory history;
-  final Function(String status) onStatusUpdate;
+class MercenaryApplicantItem extends StatelessWidget {
+  final MercenaryApplicant applicant;
+  final VoidCallback onAccept;
+  final VoidCallback onReject;
 
-  const TeamApplyHistoryItem({
+  const MercenaryApplicantItem({
     super.key,
-    required this.history,
-    required this.onStatusUpdate,
+    required this.applicant,
+    required this.onAccept,
+    required this.onReject,
   });
 
   @override
@@ -36,11 +38,11 @@ class TeamApplyHistoryItem extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: history.imageUrl.isNotEmpty
-                    ? NetworkImage(history.imageUrl)
+                backgroundImage: applicant.profileImage.isNotEmpty
+                    ? NetworkImage(applicant.profileImage)
                     : null,
-                child: history.imageUrl.isEmpty
-                    ? const Icon(Icons.group, color: Colors.grey)
+                child: applicant.profileImage.isEmpty
+                    ? const Icon(Icons.person, color: Colors.grey)
                     : null,
               ),
               const SizedBox(width: 12),
@@ -49,7 +51,7 @@ class TeamApplyHistoryItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      history.teamName,
+                      applicant.mercenaryName,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -58,7 +60,7 @@ class TeamApplyHistoryItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '신청일: ${DateFormat('yyyy.MM.dd').format(history.appliedAt)}',
+                      '지원일: ${DateFormat('yyyy.MM.dd').format(applicant.appliedAt)}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -67,7 +69,7 @@ class TeamApplyHistoryItem extends StatelessWidget {
                   ],
                 ),
               ),
-              _buildStatusChip(history.status),
+              _buildStatusChip(applicant.status),
             ],
           ),
           const SizedBox(height: 16),
@@ -80,70 +82,96 @@ class TeamApplyHistoryItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoRow(Icons.location_on, history.location),
+                _buildInfoRow(Icons.groups, '팀: ${applicant.teamName}'),
+                const SizedBox(height: 8),
+                _buildInfoRow(Icons.location_on, applicant.location),
                 const SizedBox(height: 8),
                 _buildInfoRow(
                   Icons.calendar_today,
-                  DateFormat('yyyy년 MM월 dd일').format(history.date),
+                  DateFormat('yyyy년 MM월 dd일').format(applicant.gameDate),
                 ),
                 const SizedBox(height: 8),
                 _buildInfoRow(Icons.access_time,
-                    '${DateFormat('HH:mm').format(history.time.start!)} ~ ${DateFormat('HH:mm').format(history.time.end!)}'),
+                    '${DateFormat('HH:mm').format(applicant.gameTime.start!)} ~ ${DateFormat('HH:mm').format(applicant.gameTime.end!)}'),
                 const SizedBox(height: 8),
-                _buildInfoRow(Icons.military_tech, history.level),
+                _buildInfoRow(Icons.military_tech, applicant.level),
                 const SizedBox(height: 8),
                 _buildInfoRow(
                   Icons.attach_money,
-                  '${NumberFormat('#,###').format(int.parse(history.cost))}원',
+                  '${NumberFormat('#,###').format(int.parse(applicant.cost))}원',
                 ),
+                if (applicant.content != null &&
+                    applicant.content!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _buildInfoRow(Icons.note, applicant.content!),
+                ],
               ],
             ),
           ),
 
-          // 신청 취소 버튼 (pending 상태일 때만 표시)
-          if (history.status == 'pending') ...[
+          // 응답 버튼 (pending 상태일 때만 표시)
+          if (applicant.canRespond) ...[
             const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  onStatusUpdate('cancelled');
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: onReject,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text('거절'),
                   ),
                 ),
-                child: const Text('신청 취소'),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: onAccept,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2BBB7D),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      '수락',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
 
-          // 상태 변경 알림
-          if (history.status != 'pending') ...[
+          // 응답 완료 알림
+          if (!applicant.canRespond) ...[
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: _getStatusColor(history.status).withOpacity(0.1),
+                color: _getStatusColor(applicant.status).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Row(
                 children: [
                   Icon(
-                    _getStatusIcon(history.status),
+                    _getStatusIcon(applicant.status),
                     size: 16,
-                    color: _getStatusColor(history.status),
+                    color: _getStatusColor(applicant.status),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    _getStatusMessage(history.status),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: _getStatusColor(history.status),
-                      fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: Text(
+                      _getStatusMessage(applicant.status),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _getStatusColor(applicant.status),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -255,11 +283,11 @@ class TeamApplyHistoryItem extends StatelessWidget {
   String _getStatusMessage(String status) {
     switch (status) {
       case 'accepted':
-        return '팀에서 신청을 수락했습니다';
+        return '지원을 수락했습니다';
       case 'rejected':
-        return '팀에서 신청을 거절했습니다';
+        return '지원을 거절했습니다';
       case 'cancelled':
-        return '신청이 취소되었습니다';
+        return '지원이 취소되었습니다';
       default:
         return '처리 대기 중입니다';
     }

@@ -116,8 +116,6 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
 
     // 뷰모델이 메모리에서 소거될 때 onDispose의 callback이 호출 됨
     ref.onDispose(() {
-      // ✅✅ 호출되면 streamSubscription을 cancel 꼭 해줘야함.
-      // ✅✅ 그래야 구독이 종료된다.
       streamSubscription.cancel();
     });
   }
@@ -149,10 +147,17 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
 
     // 신청(초대)으로 스와이프 했으면 'users/userId/mercenaryInvitationHistory'으로 데이터 보내기
     if (isApplicant) {
+      print('🔥 용병 초대 프로세스 시작 - feedId: $feedId');
+
       final inviteToMercenaryUsecase =
           ref.read(inviteToMercenaryUsecaseProvider);
+      final success = await inviteToMercenaryUsecase.execute(feedId);
 
-      inviteToMercenaryUsecase.execute(feedId);
+      if (success) {
+        print(' 용병 초대 완료 - feedId: $feedId');
+      } else {
+        print(' 용병 초대 실패 - feedId: $feedId');
+      }
     }
   }
 

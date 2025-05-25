@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/data/data_source/my_mercenary_invitation_history_data_source.dart';
-import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source.dart';
 import 'package:mercenaryhub/data/dto/my_mercenary_invitation_history_dto.dart';
-import 'package:mercenaryhub/data/dto/my_team_application_history_dto.dart';
-import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
-import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 class MyMercenaryInvitationHistoryDataSourceImpl
     implements MyMercenaryInvitationHistoryDataSource {
@@ -17,99 +13,107 @@ class MyMercenaryInvitationHistoryDataSourceImpl
   Future<List<MyMercenaryInvitationHistoryDto>>
       fetchInvitationHistories() async {
     try {
-      final userMap = (await _firebaseFirestore
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser?.uid)
-              .get())
-          .data();
-
-      final invitationList = List<Map<String, dynamic>>.from(
-          userMap!['mercenaryInvitationHistory']);
-      print('🥰🥰🥰🥰🥰🥰🥰');
-      print(invitationList);
-      print('🥰🥰🥰🥰🥰🥰🥰');
-
-      if (invitationList != null) {
-        return invitationList.map((feedMap) {
-          return MyMercenaryInvitationHistoryDto.fromJson(feedMap);
-        }).toList();
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        print('❌ 로그인된 사용자가 없습니다.');
+        return [];
       }
 
-      return [];
-      // return querySnapshot.docs.map((doc) {
-      //   final data = doc.data();
-      //   return TeamFeedDto.fromJson({
-      //     'id': doc.id,
-      //     ...data,
-      //   });
-      // }).toList();
+      print('🥰 DataSource: 사용자 ${currentUser.uid}의 초대 내역 조회 시작');
+
+      final userDoc = await _firebaseFirestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        print('❌ 사용자 문서가 존재하지 않습니다.');
+
+        // 사용자 문서가 없으면 빈 배열로 초기화
+        await _firebaseFirestore.collection('users').doc(currentUser.uid).set({
+          'mercenaryInvitationHistory': [],
+        }, SetOptions(merge: true));
+
+        return [];
+      }
+
+      final userData = userDoc.data()!;
+      final invitationList =
+          userData['mercenaryInvitationHistory'] as List<dynamic>? ?? [];
+
+      print('🥰 DataSource: ${invitationList.length}개의 초대 내역 발견');
+
+      if (invitationList.isEmpty) {
+        return [];
+      }
+
+      return invitationList.map((feedMap) {
+        final map = Map<String, dynamic>.from(feedMap);
+        print('🥰 DataSource: 초대 내역 데이터: ${map['name']} - ${map['status']}');
+        return MyMercenaryInvitationHistoryDto.fromJson(map);
+      }).toList();
     } catch (e, s) {
-      print('❌fetchInvitationHistories error: $e');
-      print('❌fetchInvitationHistories error: $s');
+      print('❌ fetchInvitationHistories error: $e');
+      print('❌ fetchInvitationHistories stack: $s');
       return [];
     }
   }
 
-  // @override
-  // Future<bool> cancelApply(String applyHistoryId) async {
-  //   try {
-  //     await _firebaseFirestore
-  //         .collection('mercenaryApplyHistories')
-  //         .doc(applyHistoryId)
-  //         .update({
-  //       'status': 'cancelled',
-  //       'cancelledAt': DateTime.now().toIso8601String(),
-  //     });
-  //     return true;
-  //   } catch (e) {
-  //     print('cancelApply error: $e');
-  //     return false;
-  //   }
-  // }
-
-  // @override
-  // Future<MyTeamApplicationHistoryDto?> fetchMercenaryApplyHistoryById(
-  //     String applyHistoryId) async {
-  //   try {
-  //     final doc = await _firebaseFirestore
-  //         .collection('mercenaryApplyHistories')
-  //         .doc(applyHistoryId)
-  //         .get();
-
-  //     if (doc.exists) {
-  //       return MyTeamApplicationHistoryDto.fromJson({
-  //         'id': doc.id,
-  //         ...doc.data()!,
-  //       });
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     print('fetchMercenaryApplyHistoryById error: $e');
-  //     return null;
-  //   }
-  // }
-
   @override
-  void inviteToMercenary(String feedId) async {
-    // 인자를 Feed타입으로 받고 싶은데 그러면 의존성 때문에 안될까 싶어 feedId로 하는 중
-    final feed = (await _firebaseFirestore
-            .collection('mercenaryFeeds')
-            .doc(feedId)
-            .get())
-        .data();
+  Future<bool> inviteToMercenary(String feedId) async {
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        print('❌ 로그인된 사용자가 없습니다.');
+        return false;
+      }
 
-    final docRef = _firebaseFirestore
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid);
+      print('🥰 DataSource: feedId $feedId로 용병 초대 시작');
 
-    // 추가한 피드를 넣기
-    // 내가 신청한 팀
-    feed!['feedId'] = feedId;
-    feed['appliedAt'] = DateTime.now().toIso8601String();
-    feed['status'] = 'pending';
+      // 용병 피드 정보 가져오기
+      final feedDoc = await _firebaseFirestore
+          .collection('mercenaryFeeds')
+          .doc(feedId)
+          .get();
 
-    await docRef.update({
-      'mercenaryInvitationHistory': FieldValue.arrayUnion([feed])
-    });
+      if (!feedDoc.exists) {
+        print('❌ 피드가 존재하지 않습니다: $feedId');
+        return false;
+      }
+
+      final feedData = feedDoc.data()!;
+      print('🥰 DataSource: 피드 데이터 조회 완료 - 용병명: ${feedData['name']}');
+
+      // 초대 내역 데이터 생성
+      final invitationData = {
+        ...feedData,
+        'feedId': feedId,
+        'appliedAt': DateTime.now().toIso8601String(),
+        'status': 'pending',
+      };
+
+      print('🥰 DataSource: 초대 데이터 생성 완료');
+
+      // users 컬렉션에 추가
+      final userDocRef =
+          _firebaseFirestore.collection('users').doc(currentUser.uid);
+
+      // 사용자 문서가 없으면 생성
+      await userDocRef.set({
+        'mercenaryInvitationHistory': [],
+      }, SetOptions(merge: true));
+
+      // 초대 내역 추가
+      await userDocRef.update({
+        'mercenaryInvitationHistory': FieldValue.arrayUnion([invitationData])
+      });
+
+      print('✅ DataSource: 용병 초대 데이터 저장 완료');
+      return true;
+    } catch (e, s) {
+      print('❌ inviteToMercenary error: $e');
+      print('❌ inviteToMercenary stack: $s');
+      return false;
+    }
   }
 }

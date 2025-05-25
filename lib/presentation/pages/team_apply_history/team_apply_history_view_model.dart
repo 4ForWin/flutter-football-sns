@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
-import 'package:mercenaryhub/domain/entity/team_apply_history.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
+import 'package:mercenaryhub/core/services/application_status_service.dart';
 
 class TeamApplyHistoryViewModel
     extends AsyncNotifier<List<MyTeamApplicationHistory>> {
@@ -12,79 +12,84 @@ class TeamApplyHistoryViewModel
   }
 
   Future<List<MyTeamApplicationHistory>> fetchApplicationHistories() async {
-    print('😇😇😇😇fetchApplicationHistories');
-    await Future.delayed(const Duration(milliseconds: 500)); // 로딩 시뮬레이션
-    final fetchApplicationHistoriesUsecase =
-        ref.read(fetchApplicationHistoriesUsecaseProvider);
-    print('🚓🚓🚓🚓');
-    return await fetchApplicationHistoriesUsecase.execute();
-    // return [
-    //   TeamApplyHistory(
-    //     id: 'dummy1',
-    //     teamName: 'FC 더미팀',
-    //     mercenaryUserId: 'user123',
-    //     mercenaryName: '홍길동',
-    //     mercenaryProfileImage: 'https://via.placeholder.com/150',
-    //     feedId: 'feed1',
-    //     appliedAt: DateTime.now().subtract(const Duration(days: 1)),
-    //     status: 'pending',
-    //     location: '서울 마포구',
-    //     gameDate: DateTime.now().add(const Duration(days: 3)),
-    //     gameTime: '18:00',
-    //     level: '중급',
-    //   ),
-    //   TeamApplyHistory(
-    //     id: 'dummy2',
-    //     teamName: '서울유나이티드',
-    //     mercenaryUserId: 'user456',
-    //     mercenaryName: '김철수',
-    //     mercenaryProfileImage: 'https://via.placeholder.com/150',
-    //     feedId: 'feed2',
-    //     appliedAt: DateTime.now().subtract(const Duration(days: 2)),
-    //     status: 'accepted',
-    //     location: '서울 강남구',
-    //     gameDate: DateTime.now().add(const Duration(days: 5)),
-    //     gameTime: '20:00',
-    //     level: '상급',
-    //   ),
-    // ];
+    try {
+      print('😇 TeamApplyHistoryViewModel: fetchApplicationHistories 시작');
+
+      // 현재 로그인된 사용자 확인
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        print('❌ 로그인된 사용자가 없습니다.');
+        return [];
+      }
+
+      // 약간의 딜레이 (로딩 시뮬레이션)
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      final fetchApplicationHistoriesUsecase =
+          ref.read(fetchApplicationHistoriesUsecaseProvider);
+
+      print('🚓 UseCase 호출 중...');
+      final applicationHistories =
+          await fetchApplicationHistoriesUsecase.execute();
+
+      print('✅ ${applicationHistories.length}개의 팀 신청 내역을 불러왔습니다.');
+
+      // 최신순으로 정렬 (신청일 기준)
+      applicationHistories.sort((a, b) => b.appliedAt.compareTo(a.appliedAt));
+
+      return applicationHistories;
+    } catch (e, stackTrace) {
+      print('❌ fetchApplicationHistories 에러: $e');
+      print('❌ Stack trace: $stackTrace');
+      return [];
+    }
   }
 
-  // Future<List<TeamApplyHistory>> fetchTeamApplyHistories() async {
-  //   final fetchUsecase = ref.read(fetchTeamApplyHistoriesUsecaseProvider);
-
-  //   // TODO: 실제 팀 ID를 가져오는 로직 필요
-  //   // 현재는 임시로 사용자 UID를 사용
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) {
-  //     throw Exception('로그인이 필요합니다');
-  //   }
-
-  //   return await fetchUsecase.execute(user.uid);
-  // }
-
-  Future<void> updateStatus(String applyHistoryId, String status) async {
-    final updateUsecase = ref.read(updateTeamApplyStatusUsecaseProvider);
-
-    state = const AsyncValue.loading();
-
+  /// 신청 내역 새로고침
+  Future<void> refreshApplicationHistories() async {
     try {
-      final success = await updateUsecase.execute(
-        applyHistoryId: applyHistoryId,
-        status: status,
+      print('🔄 팀 신청 내역 새로고침 시작');
+      state = const AsyncValue.loading();
+
+      final refreshedHistories = await fetchApplicationHistories();
+      state = AsyncValue.data(refreshedHistories);
+
+      print('✅ 팀 신청 내역 새로고침 완료');
+    } catch (e, stackTrace) {
+      print('❌ 새로고침 에러: $e');
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  /// 신청 상태 업데이트 (신청 취소)
+  Future<void> updateStatus(String feedId, String status) async {
+    try {
+      print('🔄 신청 상태 업데이트 시작: $feedId -> $status');
+
+      // 현재 상태를 로딩으로 변경
+      state = const AsyncValue.loading();
+
+      // 새로운 상태 업데이트 서비스 사용
+      final success =
+          await ApplicationStatusService.updateTeamApplicationStatus(
+        feedId: feedId,
+        newStatus: status,
       );
 
       if (success) {
+        print('✅ 상태 업데이트 성공');
         // 상태 업데이트 후 목록 새로고침
-        state = await AsyncValue.guard(() => fetchApplicationHistories());
+        await refreshApplicationHistories();
       } else {
+        print('❌ 상태 업데이트 실패');
         state = AsyncValue.error(
           '상태 업데이트에 실패했습니다',
           StackTrace.current,
         );
       }
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+    } catch (e, stackTrace) {
+      print('❌ updateStatus 에러: $e');
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 }

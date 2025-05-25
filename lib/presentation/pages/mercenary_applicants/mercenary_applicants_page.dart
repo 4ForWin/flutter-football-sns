@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_item.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicant_item.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicants_view_model.dart';
 
-class MercenaryApplyHistoryPage extends ConsumerWidget {
-  const MercenaryApplyHistoryPage({super.key});
+class MercenaryApplicantsPage extends ConsumerWidget {
+  const MercenaryApplicantsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(myMercenaryInvitationHistoryViewModelProvider);
+    final state = ref.watch(mercenaryApplicantsViewModelProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -16,7 +16,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFFFFFFF),
         foregroundColor: const Color(0xFF222222),
         elevation: 0,
-        title: const Text('내가 초대한 용병'),
+        title: const Text('팀에 지원한 용병'),
         shape: Border(
           bottom: BorderSide(
             color: Colors.grey[300]!,
@@ -27,8 +27,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
           IconButton(
             onPressed: () {
               ref
-                  .read(myMercenaryInvitationHistoryViewModelProvider.notifier)
-                  .refreshInvitationHistories();
+                  .read(mercenaryApplicantsViewModelProvider.notifier)
+                  .refreshMercenaryApplicants();
             },
             icon: const Icon(Icons.refresh),
             tooltip: '새로고침',
@@ -36,10 +36,10 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
         ],
       ),
       body: state.when(
-        data: (histories) {
-          print('📱 UI: ${histories.length}개의 초대 내역 표시');
+        data: (applicants) {
+          print('📱 UI: ${applicants.length}개의 지원자 표시');
 
-          if (histories.isEmpty) {
+          if (applicants.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '초대내역이 없습니다',
+                    '지원한 용병이 없습니다',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -61,9 +61,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                   ElevatedButton(
                     onPressed: () {
                       ref
-                          .read(myMercenaryInvitationHistoryViewModelProvider
-                              .notifier)
-                          .refreshInvitationHistories();
+                          .read(mercenaryApplicantsViewModelProvider.notifier)
+                          .refreshMercenaryApplicants();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2BBB7D),
@@ -81,37 +80,59 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async {
               await ref
-                  .read(myMercenaryInvitationHistoryViewModelProvider.notifier)
-                  .refreshInvitationHistories();
+                  .read(mercenaryApplicantsViewModelProvider.notifier)
+                  .refreshMercenaryApplicants();
             },
             color: const Color(0xFF2BBB7D),
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: histories.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final history = histories[index];
-                return MercenaryApplyHistoryItem(
-                  history: history,
-                  onStatusUpdate: (status) {
-                    print(
-                        '📱 UI: 초대 상태 업데이트 요청 - ${history.feedId} -> $status');
+            child: Column(
+              children: [
+                // 상태별 필터 탭 (선택사항)
+                _buildFilterTabs(context, ref, applicants),
 
-                    // 확인 다이얼로그 표시
-                    _showStatusUpdateDialog(
-                      context,
-                      status,
-                      history.name,
-                      () {
-                        ref
-                            .read(myMercenaryInvitationHistoryViewModelProvider
-                                .notifier)
-                            .updateInvitationStatus(history.feedId, status);
-                      },
-                    );
-                  },
-                );
-              },
+                // 지원자 목록
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: applicants.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final applicant = applicants[index];
+                      return MercenaryApplicantItem(
+                        applicant: applicant,
+                        onAccept: () {
+                          print('📱 UI: 지원 수락 요청 - ${applicant.applicationId}');
+                          _showResponseDialog(
+                            context,
+                            'accepted',
+                            applicant.mercenaryName,
+                            () {
+                              ref
+                                  .read(mercenaryApplicantsViewModelProvider
+                                      .notifier)
+                                  .acceptApplication(applicant.applicationId);
+                            },
+                          );
+                        },
+                        onReject: () {
+                          print('📱 UI: 지원 거절 요청 - ${applicant.applicationId}');
+                          _showResponseDialog(
+                            context,
+                            'rejected',
+                            applicant.mercenaryName,
+                            () {
+                              ref
+                                  .read(mercenaryApplicantsViewModelProvider
+                                      .notifier)
+                                  .rejectApplication(applicant.applicationId);
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -126,7 +147,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  '초대 내역을 불러오는 중...',
+                  '지원자 목록을 불러오는 중...',
                   style: TextStyle(
                     fontSize: 16,
                     color: Color(0xFF222222),
@@ -168,9 +189,8 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () {
                     ref
-                        .read(myMercenaryInvitationHistoryViewModelProvider
-                            .notifier)
-                        .refreshInvitationHistories();
+                        .read(mercenaryApplicantsViewModelProvider.notifier)
+                        .refreshMercenaryApplicants();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2BBB7D),
@@ -188,10 +208,52 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
     );
   }
 
-  /// 상태 업데이트 확인 다이얼로그
-  void _showStatusUpdateDialog(
+  /// 상태별 필터 탭
+  Widget _buildFilterTabs(
+      BuildContext context, WidgetRef ref, dynamic applicants) {
+    final viewModel = ref.read(mercenaryApplicantsViewModelProvider.notifier);
+
+    // 상태별 카운트 계산
+    final pendingCount = viewModel.getPendingApplicants().length;
+    final acceptedCount = viewModel.getAcceptedApplicants().length;
+    final rejectedCount = viewModel.getRejectedApplicants().length;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFilterChip('전체', applicants.length, true),
+          _buildFilterChip('대기중', pendingCount, false),
+          _buildFilterChip('수락됨', acceptedCount, false),
+          _buildFilterChip('거절됨', rejectedCount, false),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, int count, bool isSelected) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xFF2BBB7D) : Colors.grey[200],
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        '$label ($count)',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: isSelected ? Colors.white : const Color(0xFF222222),
+        ),
+      ),
+    );
+  }
+
+  /// 응답 확인 다이얼로그
+  void _showResponseDialog(
     BuildContext context,
-    String status,
+    String response,
     String mercenaryName,
     VoidCallback onConfirm,
   ) {
@@ -199,25 +261,20 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
     String message;
     Color actionColor;
 
-    switch (status) {
-      case 'cancelled':
-        title = '초대 취소';
-        message = '$mercenaryName님에 대한 초대를 취소하시겠습니까?';
-        actionColor = Colors.red;
-        break;
+    switch (response) {
       case 'accepted':
-        title = '초대 수락';
-        message = '$mercenaryName님이 초대를 수락했습니다.';
+        title = '지원 수락';
+        message = '$mercenaryName님의 지원을 수락하시겠습니까?';
         actionColor = const Color(0xFF2BBB7D);
         break;
       case 'rejected':
-        title = '초대 거절';
-        message = '$mercenaryName님이 초대를 거절했습니다.';
+        title = '지원 거절';
+        message = '$mercenaryName님의 지원을 거절하시겠습니까?';
         actionColor = Colors.red;
         break;
       default:
-        title = '상태 변경';
-        message = '상태를 변경하시겠습니까?';
+        title = '응답 처리';
+        message = '응답을 처리하시겠습니까?';
         actionColor = const Color(0xFF2BBB7D);
     }
 

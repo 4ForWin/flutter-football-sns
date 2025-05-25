@@ -5,7 +5,14 @@ class ApplyToTeamUsecase {
 
   ApplyToTeamUsecase(this._myTeamApplicationHistoryRepository);
 
-  void execute(String feedId) {
-    _myTeamApplicationHistoryRepository.applyToTeam(feedId);
+  Future<bool> execute(String feedId) async {
+    try {
+      await _myTeamApplicationHistoryRepository.applyToTeam(feedId);
+      print('✅ ApplyToTeamUsecase: 팀 신청 완료 - feedId: $feedId');
+      return true;
+    } catch (e) {
+      print('❌ ApplyToTeamUsecase error: $e');
+      return false;
+    }
   }
 }
