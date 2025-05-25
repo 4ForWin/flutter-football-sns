@@ -49,16 +49,13 @@ class MainApp extends StatelessWidget {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
         '/team_apply_history': (context) => const TeamApplyHistoryPage(),
-        '/mercenary_apply_history': (context) =>
-            const MercenaryApplyHistoryPage(),
+        '/mercenary_apply_history': (context) => const MercenaryApplyHistoryPage(),
         '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginView(),
-        'level': (context) => const  IntroLevelPage()     
-        '/team_invitation_history': (context) =>
-            const TeamInvitationHistoryPage(),
-        '/mercenary_applicants': (context) =>
-            const MercenaryApplicantsPage(), // 새로 추가
+        'level': (context) => IntroLevelPage(),  
+        '/team_invitation_history': (context) => const TeamInvitationHistoryPage(),
+        '/mercenary_applicants': (context) => const MercenaryApplicantsPage(), // 새로 추가
       },
 
       //앱 자체 언어 설정 함으로써 캘린더를 한국어로 변경
