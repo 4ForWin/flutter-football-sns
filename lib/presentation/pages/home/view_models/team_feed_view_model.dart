@@ -7,14 +7,34 @@ import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
 import 'package:mercenaryhub/domain/usecase/apply_to_team_usecase.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
-class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
+class TeamFeedState {
+  bool isLoading;
+  List<TeamFeed> feedList;
+
+  TeamFeedState({
+    required this.isLoading,
+    required this.feedList,
+  });
+
+  TeamFeedState copyWith({
+    bool? isLoading,
+    List<TeamFeed>? feedList,
+  }) {
+    return TeamFeedState(
+      isLoading: isLoading ?? this.isLoading,
+      feedList: feedList ?? this.feedList,
+    );
+  }
+}
+
+class TeamFeedViewModel extends Notifier<TeamFeedState> {
   @override
   build() {
     print('✅TeamFeedViewModel build');
     // streamFetchFeeds();
     // fetchFeeds();
     initialize();
-    return [];
+    return TeamFeedState(isLoading: true, feedList: []);
   }
 
   String? _lastId;
@@ -27,11 +47,16 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     _isLast = false;
     _lastId = null;
 
-    state = [];
+    state = state.copyWith(feedList: []);
     fetchTeamFeeds();
   }
 
-  void initialize() async {
+  void initialize({bool? isRefresh}) async {
+    if (isRefresh ?? false) {
+      _isLast = false;
+      _lastId = null;
+      state = state.copyWith(isLoading: true);
+    }
     await fetchTeamFeedLogs(FirebaseAuth.instance.currentUser!.uid);
     fetchTeamFeeds();
   }
@@ -62,7 +87,10 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
 
     if (_isLast) return;
     _lastId = nextFeeds.last.id;
-    state = [...state, ...nextFeeds];
+    state = state.copyWith(
+      isLoading: false,
+      feedList: [...state.feedList, ...nextFeeds],
+    );
     print('team❌❌❌❌❌❌❌❌');
   }
 
@@ -73,7 +101,7 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     final streamFeedList = streamFetchTeamFeedsUsecase.execute();
 
     final streamSubscription = streamFeedList.listen((feeds) {
-      state = feeds;
+      state = state.copyWith(feedList: [...feeds]);
     });
 
     // 뷰모델이 메모리에서 소거될 때 onDispose의 callback이 호출 됨
@@ -116,13 +144,13 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
   }
 
   void removeFeedOfState() {
-    state.removeAt(0);
-    state = [...state];
+    state.feedList.removeAt(0);
+    state = state.copyWith(feedList: [...state.feedList]);
   }
 }
 
 final teamFeedViewModelProvider =
-    NotifierProvider<TeamFeedViewModel, List<TeamFeed>>(
+    NotifierProvider<TeamFeedViewModel, TeamFeedState>(
   () {
     return TeamFeedViewModel();
   },
