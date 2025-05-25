@@ -3,6 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
 
 class LevelDropdownFormField extends StatelessWidget {
+  final String typeText;
+
+  const LevelDropdownFormField({
+    super.key,
+    required this.typeText,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
@@ -15,7 +22,7 @@ class LevelDropdownFormField extends StatelessWidget {
           color: Color(0xff222222),
         ),
         decoration: InputDecoration(
-          labelText: '원하는 실력',
+          labelText: typeText == '용병' ? '내 실력' : '원하는 실력',
           labelStyle: TextStyle(
             color: Color(0xff222222),
           ),
@@ -34,7 +41,7 @@ class LevelDropdownFormField extends StatelessWidget {
         }).toList(),
         validator: (value) {
           if (value?.trim().isEmpty ?? true) {
-            return '원하는 실력을 선택해 주세요';
+            return typeText == '용병' ? '내 실력을 선택해 주세요' : '원하는 실력을 선택해 주세요';
           }
 
           return null;

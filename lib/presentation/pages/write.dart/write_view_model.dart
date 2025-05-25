@@ -139,7 +139,7 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
         state.date.year,
         state.date.month,
         state.date.day,
-        selectedTime!.hour,
+        selectedTime.hour,
         selectedTime.minute,
       );
 
@@ -203,14 +203,14 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
     return imageUrl;
   }
 
-  Future<bool> insertFeed({
+  Future<bool> insertTeamFeed({
     required String teamName,
     required String cost,
     required String person,
     required String content,
   }) async {
-    final insertFeedUsecase = ref.read(insertFeedUsecaseProvider);
-    bool isComplete = await insertFeedUsecase.execute(
+    final insertTeamFeedUsecase = ref.read(insertTeamFeedUsecaseProvider);
+    bool isComplete = await insertTeamFeedUsecase.execute(
       location: state.location!,
       teamName: teamName,
       cost: cost,
@@ -224,11 +224,30 @@ class WriteViewModel extends AutoDisposeNotifier<WriteState> {
 
     return isComplete;
   }
+
+  Future<bool> insertMercenaryFeed({
+    required String name,
+    required String cost,
+    required String content,
+  }) async {
+    final insertMercenaryFeedUsecase =
+        ref.read(insertMercenaryFeedUsecaseProvider);
+    bool isComplete = await insertMercenaryFeedUsecase.execute(
+      location: state.location!,
+      name: name,
+      cost: cost,
+      level: state.level!,
+      date: state.date,
+      time: state.time,
+      content: content,
+      imageUrl: state.imageUrl!,
+    );
+
+    return isComplete;
+  }
 }
 
 final writeViewModelProvider =
-    NotifierProvider.autoDispose<WriteViewModel, WriteState>(
-  () {
-    return WriteViewModel();
-  },
-);
+    NotifierProvider.autoDispose<WriteViewModel, WriteState>(() {
+  return WriteViewModel();
+});

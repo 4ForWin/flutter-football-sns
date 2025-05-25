@@ -1,6 +1,6 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mercenaryhub/data/dto/feed_dto.dart';
+import 'package:mercenaryhub/data/dto/team_feed_dto.dart';
 
 void main() {
   test('feed data source test', () async {
@@ -20,7 +20,7 @@ void main() {
     final feedDtoList = docs.map((doc) {
       final map = doc.data();
       final newMap = {'id': doc.id, ...map};
-      return FeedDto.fromJson(newMap);
+      return TeamFeedDto.fromJson(newMap);
     }).toList();
 
     expect(feedDtoList.first.id, 'id');

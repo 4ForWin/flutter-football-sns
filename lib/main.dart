@@ -10,10 +10,14 @@ import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import 'package:mercenaryhub/firebase_options.dart';
 import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
 import 'package:mercenaryhub/presentation/pages/intro/intro_level_page.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicants_page.dart';
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
 import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
 import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
+import 'package:mercenaryhub/presentation/pages/team_apply_history/team_apply_history_page.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_page.dart';
 import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
+import 'package:mercenaryhub/presentation/pages/team_invitation_history/team_invitation_history_page.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,14 +42,23 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Pretendard'), // 앱 기본 폰트 변경
-      home: const SettingPage(),
+      home: const SplashView(),
+      // main.dart 파일의 routes 섹션에 다음 라우트를 추가해주세요
+
       routes: {
         '/setting': (context) => const SettingPage(),
         '/alarm_setting': (context) => const AlarmSettingPage(),
+        '/team_apply_history': (context) => const TeamApplyHistoryPage(),
+        '/mercenary_apply_history': (context) =>
+            const MercenaryApplyHistoryPage(),
         '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginView(),
         'level': (context) => const  IntroLevelPage()     
+        '/team_invitation_history': (context) =>
+            const TeamInvitationHistoryPage(),
+        '/mercenary_applicants': (context) =>
+            const MercenaryApplicantsPage(), // 새로 추가
       },
 
       //앱 자체 언어 설정 함으로써 캘린더를 한국어로 변경

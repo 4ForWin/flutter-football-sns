@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/content_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/cost_text_form_field.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_icon.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/date_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/level_dropdown_form_field.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/widgets/name_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/person_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/image_bottom_sheet.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/image_viewer.dart';
@@ -14,15 +14,17 @@ import 'package:mercenaryhub/presentation/pages/write.dart/widgets/location_icon
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/location_text_form_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/post_button.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/team_text_form_field.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_field.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_icon.dart';
 import 'package:mercenaryhub/presentation/pages/write.dart/widgets/time_text_form_field.dart';
 
 class WritePage extends ConsumerStatefulWidget {
   final BuildContext homeContext;
+  final String typeText;
+
   const WritePage({
     super.key,
     required this.homeContext,
+    required this.typeText,
   });
 
   @override
@@ -40,6 +42,7 @@ class _WritePageState extends ConsumerState<WritePage> {
   final endTimeTextController = TextEditingController();
   final imagePathTextController = TextEditingController();
   final contentTextController = TextEditingController();
+  final nameTextController = TextEditingController();
   final LoadingOverlay loadingOverlay = LoadingOverlay();
 
   @override
@@ -54,10 +57,15 @@ class _WritePageState extends ConsumerState<WritePage> {
     endTimeTextController.dispose();
     imagePathTextController.dispose();
     contentTextController.dispose();
+    nameTextController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('❤️❤️❤️❤️');
+    print(widget.typeText);
+    print('❤️❤️❤️❤️');
+
     final scaffoldPadding = MediaQuery.of(context).padding;
     return GestureDetector(
       onTap: () {
@@ -80,9 +88,11 @@ class _WritePageState extends ConsumerState<WritePage> {
                   costTextController: costTextController,
                   personTextController: personTextController,
                   teamTextController: teamTextController,
+                  nameTextController: nameTextController,
                   contentTextController: contentTextController,
                   loadingOverlay: loadingOverlay,
                   homeContext: widget.homeContext,
+                  typeText: widget.typeText,
                 ),
               ],
               actionsPadding: EdgeInsets.only(right: 20)),
@@ -102,10 +112,14 @@ class _WritePageState extends ConsumerState<WritePage> {
                       ),
                     ],
                   ),
-                  TeamTextFormField(controller: teamTextController),
+                  widget.typeText == '용병'
+                      ? NameTextFormField(controller: nameTextController)
+                      : TeamTextFormField(controller: teamTextController),
                   CostTextFormField(controller: costTextController),
-                  PersonTextFormField(controller: personTextController),
-                  LevelDropdownFormField(),
+                  widget.typeText == '용병'
+                      ? SizedBox()
+                      : PersonTextFormField(controller: personTextController),
+                  LevelDropdownFormField(typeText: widget.typeText),
                   Row(
                     children: [
                       DateTextFormField(controller: dateTextController),
@@ -136,10 +150,10 @@ class _WritePageState extends ConsumerState<WritePage> {
                       ),
                     ],
                   ),
-                  // DateField(),
-                  // TimeField(type: 'start'),
-                  // TimeField(type: 'end'),
-                  ContentTextFormField(controller: contentTextController),
+                  ContentTextFormField(
+                    controller: contentTextController,
+                    typeText: widget.typeText,
+                  ),
                   SizedBox(
                     height: 20,
                   ),
