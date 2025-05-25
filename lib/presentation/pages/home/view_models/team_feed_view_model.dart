@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source_impl.dart';
 import 'package:mercenaryhub/domain/entity/team_feed.dart';
 import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
+import 'package:mercenaryhub/domain/usecase/apply_to_team_usecase.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
 class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
@@ -103,6 +106,18 @@ class TeamFeedViewModel extends Notifier<List<TeamFeed>> {
     ];
 
     await insertTeamFeedLogUsecase.execute(uid, feedId, isApplicant);
+
+    // 신청으로 스와이프 했으면 'users/userId/teamApplicationHistory'으로 데이터 보내기
+    if (isApplicant) {
+      final applyToTeamUsecase = ref.read(applyToTeamUsecaseProvider);
+
+      applyToTeamUsecase.execute(feedId);
+    }
+  }
+
+  void removeFeedOfState() {
+    state.removeAt(0);
+    state = [...state];
   }
 }
 

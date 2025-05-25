@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
 import 'package:mercenaryhub/domain/entity/team_apply_history.dart';
 
 class TeamApplyHistoryItem extends StatelessWidget {
-  final TeamApplyHistory history;
+  final MyTeamApplicationHistory history;
   final Function(String status) onStatusUpdate;
 
   const TeamApplyHistoryItem({
@@ -36,10 +37,10 @@ class TeamApplyHistoryItem extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: history.mercenaryProfileImage.isNotEmpty
-                    ? NetworkImage(history.mercenaryProfileImage)
+                backgroundImage: history.imageUrl.isNotEmpty
+                    ? NetworkImage(history.imageUrl)
                     : null,
-                child: history.mercenaryProfileImage.isEmpty
+                child: history.imageUrl.isEmpty
                     ? const Icon(Icons.person, color: Colors.grey)
                     : null,
               ),
@@ -49,7 +50,7 @@ class TeamApplyHistoryItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      history.mercenaryName,
+                      history.teamName,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -84,10 +85,11 @@ class TeamApplyHistoryItem extends StatelessWidget {
                 const SizedBox(height: 8),
                 _buildInfoRow(
                   Icons.calendar_today,
-                  DateFormat('yyyy년 MM월 dd일').format(history.gameDate),
+                  DateFormat('yyyy년 MM월 dd일').format(history.date),
                 ),
                 const SizedBox(height: 8),
-                _buildInfoRow(Icons.access_time, history.gameTime),
+                _buildInfoRow(Icons.access_time,
+                    '${DateFormat('HH:mm').format(history.time.start!)} ~ ${DateFormat('HH:mm').format(history.time.end!)}'),
                 const SizedBox(height: 8),
                 _buildInfoRow(Icons.military_tech, history.level),
               ],

@@ -27,11 +27,13 @@ class SettingPage extends ConsumerWidget {
 
           // 기본 설정 항목들
           SettingTile(
-            title: '팀 신청내역',
+            // title: '팀 신청내역',
+            title: '내가 신청한 팀',
             onTap: () => viewModel.navigateToTeamApplyHistory(context),
           ),
           SettingTile(
-            title: '용병 신청내역',
+            // title: '용병 신청내역',
+            title: '내가 초대한 용병',
             onTap: () => viewModel.navigateToMercenaryApplyHistory(context),
           ),
           SettingTile(

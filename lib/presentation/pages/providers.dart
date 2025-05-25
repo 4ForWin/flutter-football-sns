@@ -13,22 +13,23 @@ import 'package:mercenaryhub/data/data_source/location_data_source.dart';
 import 'package:mercenaryhub/data/data_source/location_data_source_impl.dart';
 import 'package:mercenaryhub/data/data_source/team_apply_history_data_source.dart';
 import 'package:mercenaryhub/data/data_source/team_apply_history_data_source_impl.dart';
-import 'package:mercenaryhub/data/data_source/mercenary_apply_history_data_source.dart';
-import 'package:mercenaryhub/data/data_source/mercenary_apply_history_data_source_impl.dart';
+import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source.dart';
+import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source_impl.dart';
 import 'package:mercenaryhub/data/repository/mercenary_feed_log_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/mercenary_feed_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_feed_log_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_feed_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/location_repository_impl.dart';
 import 'package:mercenaryhub/data/repository/team_apply_history_repository_impl.dart';
-import 'package:mercenaryhub/data/repository/mercenary_apply_history_repository_impl.dart';
+import 'package:mercenaryhub/data/repository/my_team_application_history_repository_impl.dart';
 import 'package:mercenaryhub/domain/repository/mercenary_feed_log_repository.dart';
 import 'package:mercenaryhub/domain/repository/mercenary_feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_feed_log_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_feed_repository.dart';
 import 'package:mercenaryhub/domain/repository/location_repository.dart';
 import 'package:mercenaryhub/domain/repository/team_apply_history_repository.dart';
-import 'package:mercenaryhub/domain/repository/mercenary_apply_history_repository.dart';
+import 'package:mercenaryhub/domain/repository/my_team_application_history_repository.dart';
+import 'package:mercenaryhub/domain/usecase/apply_to_team_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_mercenary_feed_logs_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_mercenary_feeds_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_feed_logs_usecase.dart';
@@ -48,7 +49,7 @@ import 'package:mercenaryhub/domain/usecase/stream_fetch_team_feeds_usecase.dart
 import 'package:mercenaryhub/domain/usecase/upload_image_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_apply_histories_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/update_team_apply_status_usecase.dart';
-import 'package:mercenaryhub/domain/usecase/fetch_mercenary_apply_histories_usecase.dart';
+import 'package:mercenaryhub/domain/usecase/fetch_application_histories_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/cancel_mercenary_apply_usecase.dart';
 
 // teamFeed 관련
@@ -195,24 +196,29 @@ final updateTeamApplyStatusUsecaseProvider = Provider((ref) {
   return UpdateTeamApplyStatusUsecase(repository);
 });
 
-// Mercenary Apply History Providers
-final _mercenaryApplyHistoryDataSourceProvider =
-    Provider<MercenaryApplyHistoryDataSource>((ref) {
-  return MercenaryApplyHistoryDataSourceImpl(FirebaseFirestore.instance);
+// 내가 신청한 팀 내역 관련 Providers
+final _myTeamApplicationHistoryDataSourceProvider =
+    Provider<MyTeamApplicationHistoryDataSource>((ref) {
+  return MyTeamApplicationHistoryDataSourceImpl(FirebaseFirestore.instance);
 });
 
-final _mercenaryApplyHistoryRepositoryProvider =
-    Provider<MercenaryApplyHistoryRepository>((ref) {
-  final dataSource = ref.read(_mercenaryApplyHistoryDataSourceProvider);
-  return MercenaryApplyHistoryRepositoryImpl(dataSource);
+final _myTeamApplicationHistoryRepositoryProvider =
+    Provider<MyTeamApplicationHistoryRepository>((ref) {
+  final dataSource = ref.read(_myTeamApplicationHistoryDataSourceProvider);
+  return MyTeamApplicationHistoryRepositoryImpl(dataSource);
 });
 
-final fetchMercenaryApplyHistoriesUsecaseProvider = Provider((ref) {
-  final repository = ref.read(_mercenaryApplyHistoryRepositoryProvider);
-  return FetchMercenaryApplyHistoriesUsecase(repository);
+final applyToTeamUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_myTeamApplicationHistoryRepositoryProvider);
+  return ApplyToTeamUsecase(repository);
 });
 
-final cancelMercenaryApplyUsecaseProvider = Provider((ref) {
-  final repository = ref.read(_mercenaryApplyHistoryRepositoryProvider);
-  return CancelMercenaryApplyUsecase(repository);
+final fetchApplicationHistoriesUsecaseProvider = Provider((ref) {
+  final repository = ref.read(_myTeamApplicationHistoryRepositoryProvider);
+  return FetchApplicationHistoriesUsecase(repository);
 });
+
+// final cancelMercenaryApplyUsecaseProvider = Provider((ref) {
+//   final repository = ref.read(_myTeamApplicationHistoryRepositoryProvider);
+//   return CancelMercenaryApplyUsecase(repository);
+// });

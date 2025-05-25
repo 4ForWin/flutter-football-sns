@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mercenaryhub/domain/entity/mercenary_apply_history.dart';
+import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
 
 class MercenaryApplyHistoryItem extends StatelessWidget {
-  final MercenaryApplyHistory history;
+  final MyTeamApplicationHistory history;
   final VoidCallback onCancel;
 
   const MercenaryApplyHistoryItem({
@@ -36,10 +36,10 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: history.teamProfileImage.isNotEmpty
-                    ? NetworkImage(history.teamProfileImage)
+                backgroundImage: history.imageUrl.isNotEmpty
+                    ? NetworkImage(history.imageUrl)
                     : null,
-                child: history.teamProfileImage.isEmpty
+                child: history.imageUrl.isEmpty
                     ? const Icon(Icons.groups, color: Colors.grey)
                     : null,
               ),
@@ -84,10 +84,11 @@ class MercenaryApplyHistoryItem extends StatelessWidget {
                 const SizedBox(height: 8),
                 _buildInfoRow(
                   Icons.calendar_today,
-                  DateFormat('yyyy년 MM월 dd일').format(history.gameDate),
+                  DateFormat('yyyy년 MM월 dd일').format(history.date),
                 ),
                 const SizedBox(height: 8),
-                _buildInfoRow(Icons.access_time, history.gameTime),
+                _buildInfoRow(Icons.access_time,
+                    '${DateFormat('HH:mm').format(history.time.start!)} ~ ${DateFormat('HH:mm').format(history.time.end!)}'),
                 const SizedBox(height: 8),
                 _buildInfoRow(Icons.military_tech, history.level),
                 const SizedBox(height: 8),

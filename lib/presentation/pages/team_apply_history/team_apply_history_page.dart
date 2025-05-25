@@ -16,7 +16,7 @@ class TeamApplyHistoryPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFFFFFFF),
         foregroundColor: const Color(0xFF222222),
         elevation: 0,
-        title: const Text('팀 신청내역'),
+        title: const Text('내가 신청한 팀'),
         shape: Border(
           bottom: BorderSide(
             color: Colors.grey[300]!,
@@ -61,9 +61,9 @@ class TeamApplyHistoryPage extends ConsumerWidget {
                 return TeamApplyHistoryItem(
                   history: histories[index],
                   onStatusUpdate: (status) {
-                    ref
-                        .read(teamApplyHistoryViewModelProvider.notifier)
-                        .updateStatus(histories[index].id, status);
+                    // ref
+                    //     .read(teamApplyHistoryViewModelProvider.notifier)
+                    //     .updateStatus(histories[index].id, status);
                   },
                 );
               },

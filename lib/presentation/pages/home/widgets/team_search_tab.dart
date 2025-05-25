@@ -30,6 +30,7 @@ class _TeamSarchTabState extends ConsumerState<TeamSearchTab> {
           shouldCallCompletionCallback: false,
           swipeDirection: SwipeDirection.up,
         );
+        feedVm.removeFeedOfState();
       },
       child: Container(
         color: Color(0xff2B2B2B),
@@ -41,17 +42,18 @@ class _TeamSarchTabState extends ConsumerState<TeamSearchTab> {
               SwipeDirection.left,
             },
             // 스와이프가 완료되면, 즉 현재 이미지가 사라지면 발생하는 이벤트
-            onSwipeCompleted: (index, direction) {
+            onSwipeCompleted: (index, direction) async {
               print('카드 $index가 $direction으로 스와이프됨');
               print(feedList[index].teamName);
 
               // TODO: uid로 하기
-              feedVm.insertTeamFeedLog(
+              await feedVm.insertTeamFeedLog(
                 uid: FirebaseAuth.instance.currentUser!.uid,
                 feedId: feedList[index].id,
                 isApplicant: direction == SwipeDirection.right ? true : false,
               );
               // feedVm.addUserToList(feedList[index], direction);
+              feedVm.removeFeedOfState();
 
               // 마지막 피드 이전에 fetch하기
               if (index == feedList.length - 2) {

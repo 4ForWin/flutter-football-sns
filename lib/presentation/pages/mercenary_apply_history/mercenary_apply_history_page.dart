@@ -8,7 +8,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(mercenaryApplyHistoryViewModelProvider);
+    final state = ref.watch(myTeamApplicationHistoryViewModelProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -50,7 +50,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(mercenaryApplyHistoryViewModelProvider);
+              ref.invalidate(myTeamApplicationHistoryViewModelProvider);
             },
             color: const Color(0xFF2BBB7D),
             child: ListView.separated(
@@ -61,9 +61,9 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
                 return MercenaryApplyHistoryItem(
                   history: histories[index],
                   onCancel: () {
-                    ref
-                        .read(mercenaryApplyHistoryViewModelProvider.notifier)
-                        .cancelApply(histories[index].id);
+                    // ref
+                    //     .read(myTeamApplicationHistoryViewModelProvider.notifier)
+                    //     .cancelApply(histories[index].id);
                   },
                 );
               },
@@ -95,7 +95,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () {
-                  ref.invalidate(mercenaryApplyHistoryViewModelProvider);
+                  ref.invalidate(myTeamApplicationHistoryViewModelProvider);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2BBB7D),
