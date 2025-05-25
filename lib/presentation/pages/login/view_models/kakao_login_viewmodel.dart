@@ -37,7 +37,7 @@ class KakaoLoginViewModel extends ChangeNotifier {
           await _saveFCMToken(_user!.uid, fcmToken);
         }
         // ✅ 홈으로 이동
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/terms', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('❌ 로그인 실패')),
