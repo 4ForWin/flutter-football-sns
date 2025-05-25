@@ -4,14 +4,42 @@ import 'package:mercenaryhub/domain/entity/mercenary_feed.dart';
 import 'package:mercenaryhub/domain/entity/mercenary_feed_log.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
-class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
+class MercenaryFeedState {
+  bool isLoading;
+  bool isLast;
+  List<MercenaryFeed> feedList;
+
+  MercenaryFeedState({
+    required this.isLoading,
+    required this.isLast,
+    required this.feedList,
+  });
+
+  MercenaryFeedState copyWith({
+    bool? isLoading,
+    bool? isLast,
+    List<MercenaryFeed>? feedList,
+  }) {
+    return MercenaryFeedState(
+      isLoading: isLoading ?? this.isLoading,
+      isLast: isLast ?? this.isLast,
+      feedList: feedList ?? this.feedList,
+    );
+  }
+}
+
+class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
   @override
   build() {
     print('✅MercenaryFeedViewModel build');
     // streamFetchFeeds();
     // fetchFeeds();
     initialize();
-    return [];
+    return MercenaryFeedState(
+      isLoading: true,
+      isLast: false,
+      feedList: [],
+    );
   }
 
   String? _lastId;
@@ -24,27 +52,31 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
     _isLast = false;
     _lastId = null;
 
-    state = [];
+    state = state.copyWith(
+      feedList: [],
+      isLast: false,
+      isLoading: true,
+    );
     fetchMercenaryFeeds();
   }
 
-  void initialize() async {
+  void initialize({bool? isRefresh}) async {
+    if (isRefresh ?? false) {
+      _isLast = false;
+      _lastId = null;
+      state = state.copyWith(isLoading: true, isLast: false);
+    }
     await fetchMercenaryFeedLogs(FirebaseAuth.instance.currentUser!.uid);
     fetchMercenaryFeeds();
   }
 
   void fetchMercenaryFeeds() async {
     print('✅FeedViewModel fetchFeeds');
-    if (_isLast) return;
+    // if (_isLast) return;
 
     final fetchMercenaryFeedsUsecase =
         ref.read(fetchMercenaryFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
-
-    print('😍');
-    print('feedIds : $feedIds');
-    print('😍');
-
     final nextFeeds = await fetchMercenaryFeedsUsecase.execute(
       lastId: _lastId,
       ignoreIds: feedIds,
@@ -52,12 +84,21 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
     );
 
     _isLast = nextFeeds.isEmpty;
+    print('🚗🚗🚗🚗');
+    print(_isLast);
+    print('🚗🚗🚗🚗');
 
-    if (_isLast) return;
+    if (_isLast) {
+      state = state.copyWith(isLast: true, isLoading: false);
+      return;
+    }
+
     _lastId = nextFeeds.last.id;
-
-    state = [...state, ...nextFeeds];
-    print('mer❌❌❌❌❌❌❌❌');
+    state = state.copyWith(
+      isLoading: false,
+      isLast: false,
+      feedList: [...state.feedList, ...nextFeeds],
+    );
   }
 
   void streamFetchMercenaryFeeds() {
@@ -67,7 +108,7 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
     final streamFeedList = streamFetchMercenaryFeedsUsecase.execute();
 
     final streamSubscription = streamFeedList.listen((feeds) {
-      state = feeds;
+      state = state.copyWith(feedList: [...feeds]);
     });
 
     // 뷰모델이 메모리에서 소거될 때 onDispose의 callback이 호출 됨
@@ -105,21 +146,21 @@ class MercenaryFeedViewModel extends Notifier<List<MercenaryFeed>> {
 
     // 신청(초대)으로 스와이프 했으면 'users/userId/mercenaryInvitationHistory'으로 데이터 보내기
     if (isApplicant) {
-      final InviteToMercenaryUsecase =
+      final inviteToMercenaryUsecase =
           ref.read(inviteToMercenaryUsecaseProvider);
 
-      InviteToMercenaryUsecase.execute(feedId);
+      inviteToMercenaryUsecase.execute(feedId);
     }
   }
 
   void removeFeedOfState() {
-    state.removeAt(0);
-    state = [...state];
+    state.feedList.removeAt(0);
+    state = state.copyWith(feedList: [...state.feedList]);
   }
 }
 
 final mercenaryFeedViewModelProvider =
-    NotifierProvider<MercenaryFeedViewModel, List<MercenaryFeed>>(
+    NotifierProvider<MercenaryFeedViewModel, MercenaryFeedState>(
   () {
     return MercenaryFeedViewModel();
   },

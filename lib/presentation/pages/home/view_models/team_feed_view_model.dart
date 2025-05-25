@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/data/data_source/my_team_application_history_data_source_impl.dart';
 import 'package:mercenaryhub/domain/entity/team_feed.dart';
 import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
-import 'package:mercenaryhub/domain/usecase/apply_to_team_usecase.dart';
 import 'package:mercenaryhub/presentation/pages/providers.dart';
 
 class TeamFeedState {
@@ -65,24 +62,14 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
     print('✅FeedViewModel fetchFeeds');
     if (_isLast) return;
 
-    print('👰‍♂️👰‍♂️👰‍♂️');
-    print(_feedLog);
-    print('👰‍♂️👰‍♂️👰‍♂️');
     final fetchTeamFeedsUsecase = ref.read(fetchTeamFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
-    print('😍');
-    print('feedIds : $feedIds');
-    print('😍');
-    // final nextFeeds = await fetchFeedsUsecase.execute(_lastId, feedIds);
     final nextFeeds = await fetchTeamFeedsUsecase.execute(
       lastId: _lastId,
       ignoreIds: feedIds,
       location: _location,
     );
 
-    print('👿');
-    print(nextFeeds.length);
-    print('👿');
     _isLast = nextFeeds.isEmpty;
 
     if (_isLast) return;
@@ -91,7 +78,6 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
       isLoading: false,
       feedList: [...state.feedList, ...nextFeeds],
     );
-    print('team❌❌❌❌❌❌❌❌');
   }
 
   void streamFetchTeamFeeds() {

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mercenaryhub/core/loading_bar.dart';
 import 'package:mercenaryhub/presentation/pages/home/view_models/team_feed_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/post_text.dart';
 import 'package:mercenaryhub/presentation/pages/home/widgets/state_icons.dart';
