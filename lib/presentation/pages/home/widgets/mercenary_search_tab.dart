@@ -48,7 +48,6 @@ class _MercenarySarchTabState extends ConsumerState<MercenarySearchTab> {
                   ),
                 ElevatedButton(
                   onPressed: () {
-                    print('버튼 되나요?');
                     feedVm.initialize(isRefresh: true);
                   },
                   child: Text(

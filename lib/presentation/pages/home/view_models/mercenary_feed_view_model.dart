@@ -64,7 +64,10 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
     if (isRefresh ?? false) {
       _isLast = false;
       _lastId = null;
-      state = state.copyWith(isLoading: true, isLast: false);
+      state = state.copyWith(
+        isLoading: true,
+        isLast: false,
+      );
     }
     await fetchMercenaryFeedLogs(FirebaseAuth.instance.currentUser!.uid);
     fetchMercenaryFeeds();
@@ -84,12 +87,12 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
     );
 
     _isLast = nextFeeds.isEmpty;
-    print('🚗🚗🚗🚗');
-    print(_isLast);
-    print('🚗🚗🚗🚗');
 
     if (_isLast) {
-      state = state.copyWith(isLast: true, isLoading: false);
+      state = state.copyWith(
+        isLast: true,
+        isLoading: false,
+      );
       return;
     }
 

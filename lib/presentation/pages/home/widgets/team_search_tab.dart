@@ -36,16 +36,26 @@ class _TeamSarchTabState extends ConsumerState<TeamSearchTab> {
         Container(
           color: Color(0xff2B2B2B),
           child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                print('버튼 되나요?');
-                feedVm.initialize(isRefresh: true);
-              },
-              child: Text(
-                '새로고침',
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (feedState.isLast)
+                Text(
+                  '피드가 더 이상 없습니다',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ElevatedButton(
+                onPressed: () {
+                  feedVm.initialize(isRefresh: true);
+                },
+                child: Text(
+                  '새로고침',
+                ),
               ),
-            ),
-          ),
+            ],
+          )),
         ),
         GestureDetector(
           onDoubleTap: () {

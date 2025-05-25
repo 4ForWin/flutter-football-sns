@@ -6,19 +6,23 @@ import 'package:mercenaryhub/presentation/pages/providers.dart';
 
 class TeamFeedState {
   bool isLoading;
+  bool isLast;
   List<TeamFeed> feedList;
 
   TeamFeedState({
     required this.isLoading,
+    required this.isLast,
     required this.feedList,
   });
 
   TeamFeedState copyWith({
     bool? isLoading,
+    bool? isLast,
     List<TeamFeed>? feedList,
   }) {
     return TeamFeedState(
       isLoading: isLoading ?? this.isLoading,
+      isLast: isLast ?? this.isLast,
       feedList: feedList ?? this.feedList,
     );
   }
@@ -31,7 +35,11 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
     // streamFetchFeeds();
     // fetchFeeds();
     initialize();
-    return TeamFeedState(isLoading: true, feedList: []);
+    return TeamFeedState(
+      isLoading: true,
+      isLast: false,
+      feedList: [],
+    );
   }
 
   String? _lastId;
@@ -44,7 +52,11 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
     _isLast = false;
     _lastId = null;
 
-    state = state.copyWith(feedList: []);
+    state = state.copyWith(
+      feedList: [],
+      isLast: false,
+      isLoading: true,
+    );
     fetchTeamFeeds();
   }
 
@@ -52,7 +64,10 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
     if (isRefresh ?? false) {
       _isLast = false;
       _lastId = null;
-      state = state.copyWith(isLoading: true);
+      state = state.copyWith(
+        isLoading: true,
+        isLast: false,
+      );
     }
     await fetchTeamFeedLogs(FirebaseAuth.instance.currentUser!.uid);
     fetchTeamFeeds();
@@ -60,7 +75,7 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
 
   void fetchTeamFeeds() async {
     print('✅FeedViewModel fetchFeeds');
-    if (_isLast) return;
+    // if (_isLast) return;
 
     final fetchTeamFeedsUsecase = ref.read(fetchTeamFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
@@ -72,10 +87,18 @@ class TeamFeedViewModel extends Notifier<TeamFeedState> {
 
     _isLast = nextFeeds.isEmpty;
 
-    if (_isLast) return;
+    if (_isLast) {
+      state = state.copyWith(
+        isLast: true,
+        isLoading: false,
+      );
+      return;
+    }
+
     _lastId = nextFeeds.last.id;
     state = state.copyWith(
       isLoading: false,
+      isLast: false,
       feedList: [...state.feedList, ...nextFeeds],
     );
   }
