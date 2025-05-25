@@ -16,7 +16,7 @@ class MercenaryApplyHistoryPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFFFFFFF),
         foregroundColor: const Color(0xFF222222),
         elevation: 0,
-        title: const Text('용병 신청내역'),
+        title: const Text('내가 초대한 용병'),
         shape: Border(
           bottom: BorderSide(
             color: Colors.grey[300]!,
