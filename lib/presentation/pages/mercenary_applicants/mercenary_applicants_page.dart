@@ -37,8 +37,6 @@ class MercenaryApplicantsPage extends ConsumerWidget {
       ),
       body: state.when(
         data: (applicants) {
-          print('📱 UI: ${applicants.length}개의 지원자 표시');
-
           if (applicants.isEmpty) {
             return Center(
               child: Column(
@@ -84,60 +82,44 @@ class MercenaryApplicantsPage extends ConsumerWidget {
                   .refreshMercenaryApplicants();
             },
             color: const Color(0xFF2BBB7D),
-            child: Column(
-              children: [
-                // 상태별 필터 탭 (선택사항)
-                _buildFilterTabs(context, ref, applicants),
-
-                // 지원자 목록
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: applicants.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final applicant = applicants[index];
-                      return MercenaryApplicantItem(
-                        applicant: applicant,
-                        onAccept: () {
-                          print('📱 UI: 지원 수락 요청 - ${applicant.applicationId}');
-                          _showResponseDialog(
-                            context,
-                            'accepted',
-                            applicant.mercenaryName,
-                            () {
-                              ref
-                                  .read(mercenaryApplicantsViewModelProvider
-                                      .notifier)
-                                  .acceptApplication(applicant.applicationId);
-                            },
-                          );
-                        },
-                        onReject: () {
-                          print('📱 UI: 지원 거절 요청 - ${applicant.applicationId}');
-                          _showResponseDialog(
-                            context,
-                            'rejected',
-                            applicant.mercenaryName,
-                            () {
-                              ref
-                                  .read(mercenaryApplicantsViewModelProvider
-                                      .notifier)
-                                  .rejectApplication(applicant.applicationId);
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: applicants.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final applicant = applicants[index];
+                return MercenaryApplicantsItem(
+                  applicant: applicant,
+                  onAccept: () {
+                    _showResponseDialog(
+                      context,
+                      'accepted',
+                      applicant.mercenaryName,
+                      () {
+                        ref
+                            .read(mercenaryApplicantsViewModelProvider.notifier)
+                            .acceptApplicant(applicant.id);
+                      },
+                    );
+                  },
+                  onReject: () {
+                    _showResponseDialog(
+                      context,
+                      'rejected',
+                      applicant.mercenaryName,
+                      () {
+                        ref
+                            .read(mercenaryApplicantsViewModelProvider.notifier)
+                            .rejectApplicant(applicant.id);
+                      },
+                    );
+                  },
+                );
+              },
             ),
           );
         },
         loading: () {
-          print('📱 UI: 로딩 중...');
           return const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +140,6 @@ class MercenaryApplicantsPage extends ConsumerWidget {
           );
         },
         error: (error, stack) {
-          print('📱 UI: 에러 발생 - $error');
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -204,48 +185,6 @@ class MercenaryApplicantsPage extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  /// 상태별 필터 탭
-  Widget _buildFilterTabs(
-      BuildContext context, WidgetRef ref, dynamic applicants) {
-    final viewModel = ref.read(mercenaryApplicantsViewModelProvider.notifier);
-
-    // 상태별 카운트 계산
-    final pendingCount = viewModel.getPendingApplicants().length;
-    final acceptedCount = viewModel.getAcceptedApplicants().length;
-    final rejectedCount = viewModel.getRejectedApplicants().length;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildFilterChip('전체', applicants.length, true),
-          _buildFilterChip('대기중', pendingCount, false),
-          _buildFilterChip('수락됨', acceptedCount, false),
-          _buildFilterChip('거절됨', rejectedCount, false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(String label, int count, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFF2BBB7D) : Colors.grey[200],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        '$label ($count)',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: isSelected ? Colors.white : const Color(0xFF222222),
-        ),
       ),
     );
   }

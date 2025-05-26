@@ -9,6 +9,7 @@ import 'package:mercenaryhub/core/notification_service/notification_service.dart
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import 'package:mercenaryhub/firebase_options.dart';
 import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicants_page.dart';
 import 'package:mercenaryhub/presentation/pages/splash/splash_view.dart';
 import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
 import 'package:mercenaryhub/presentation/pages/setting/alarm_setting_page.dart';
@@ -47,11 +48,12 @@ class MainApp extends StatelessWidget {
         '/team_apply_history': (context) => const TeamApplyHistoryPage(),
         '/mercenary_apply_history': (context) =>
             const MercenaryApplyHistoryPage(),
+        '/team_invitation_history': (context) =>
+            const TeamInvitationHistoryPage(),
+        '/mercenary_applicants': (context) => const MercenaryApplicantsPage(),
         '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginView(),
-        '/team_invitation_history': (context) =>
-            const TeamInvitationHistoryPage(),
       },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
