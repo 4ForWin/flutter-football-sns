@@ -1,6 +1,7 @@
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 class MyTeamApplicationHistoryDto {
+  final String? applicationId; // 고유 ID 추가
   final String teamName;
   final String uid;
   final String feedId;
@@ -14,6 +15,7 @@ class MyTeamApplicationHistoryDto {
   final String status;
 
   MyTeamApplicationHistoryDto({
+    this.applicationId, // nullable로 설정 (기존 데이터 호환성)
     required this.teamName,
     required this.uid,
     required this.cost,
@@ -29,6 +31,7 @@ class MyTeamApplicationHistoryDto {
 
   factory MyTeamApplicationHistoryDto.fromJson(Map<String, dynamic> json) {
     return MyTeamApplicationHistoryDto(
+      applicationId: json['applicationId'], // nullable이므로 null일 수 있음
       teamName: json['teamName'],
       uid: json['uid'],
       cost: json['cost'],
@@ -45,6 +48,7 @@ class MyTeamApplicationHistoryDto {
 
   Map<String, dynamic> toJson() {
     return {
+      if (applicationId != null) 'applicationId': applicationId,
       'teamName': teamName,
       'uid': uid,
       'cost': cost,

@@ -14,11 +14,8 @@ class MyTeamApplicationHistoryDataSourceImpl
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        print('❌ 로그인된 사용자가 없습니다.');
         return [];
       }
-
-      print('🥰 DataSource: 사용자 ${currentUser.uid}의 신청 내역 조회 시작');
 
       final userDoc = await _firebaseFirestore
           .collection('users')
@@ -26,13 +23,6 @@ class MyTeamApplicationHistoryDataSourceImpl
           .get();
 
       if (!userDoc.exists) {
-        print('❌ 사용자 문서가 존재하지 않습니다.');
-
-        // 사용자 문서가 없으면 빈 배열로 초기화
-        await _firebaseFirestore.collection('users').doc(currentUser.uid).set({
-          'teamApplicationHistory': [],
-        }, SetOptions(merge: true));
-
         return [];
       }
 
@@ -40,21 +30,15 @@ class MyTeamApplicationHistoryDataSourceImpl
       final applicationList =
           userData['teamApplicationHistory'] as List<dynamic>? ?? [];
 
-      print('🥰 DataSource: ${applicationList.length}개의 신청 내역 발견');
-
       if (applicationList.isEmpty) {
         return [];
       }
 
       return applicationList.map((feedMap) {
         final map = Map<String, dynamic>.from(feedMap);
-        print(
-            '🥰 DataSource: 신청 내역 데이터: ${map['teamName']} - ${map['status']}');
         return MyTeamApplicationHistoryDto.fromJson(map);
       }).toList();
-    } catch (e, s) {
-      print('❌ fetchApplicationHistories error: $e');
-      print('❌ fetchApplicationHistories stack: $s');
+    } catch (e) {
       return [];
     }
   }
@@ -64,53 +48,69 @@ class MyTeamApplicationHistoryDataSourceImpl
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        print('❌ 로그인된 사용자가 없습니다.');
         return false;
       }
 
-      print('🥰 DataSource: feedId $feedId로 팀 신청 시작');
-
-      // 팀 피드 정보 가져오기
-      final feedDoc =
-          await _firebaseFirestore.collection('teamFeeds').doc(feedId).get();
-
-      if (!feedDoc.exists) {
-        print('❌ 피드가 존재하지 않습니다: $feedId');
-        return false;
-      }
-
-      final feedData = feedDoc.data()!;
-      print('🥰 DataSource: 피드 데이터 조회 완료 - 팀명: ${feedData['teamName']}');
-
-      // 신청 내역 데이터 생성
-      final applicationData = {
-        ...feedData,
-        'feedId': feedId,
-        'appliedAt': DateTime.now().toIso8601String(),
-        'status': 'pending',
-      };
-
-      print('🥰 DataSource: 신청 데이터 생성 완료');
-
-      // users 컬렉션에 추가
       final userDocRef =
           _firebaseFirestore.collection('users').doc(currentUser.uid);
 
-      // 사용자 문서가 없으면 생성
-      await userDocRef.set({
-        'teamApplicationHistory': [],
-      }, SetOptions(merge: true));
+      return await _firebaseFirestore.runTransaction((transaction) async {
+        // 먼저 현재 사용자 문서 읽기
+        final userDoc = await transaction.get(userDocRef);
 
-      // 신청 내역 추가
-      await userDocRef.update({
-        'teamApplicationHistory': FieldValue.arrayUnion([applicationData])
+        List<Map<String, dynamic>> existingApplications = [];
+
+        if (userDoc.exists) {
+          final userData = userDoc.data()!;
+          existingApplications = List<Map<String, dynamic>>.from(
+              userData['teamApplicationHistory'] ?? []);
+        }
+
+        // 중복 체크
+        final hasPendingApplication = existingApplications.any(
+            (app) => app['feedId'] == feedId && app['status'] == 'pending');
+
+        if (hasPendingApplication) {
+          return false;
+        }
+
+        // 팀 피드 정보 가져오기
+        final feedDoc = await transaction
+            .get(_firebaseFirestore.collection('teamFeeds').doc(feedId));
+
+        if (!feedDoc.exists) {
+          return false;
+        }
+
+        final feedData = feedDoc.data()!;
+
+        // 고유한 신청 ID 생성
+        final applicationId = _firebaseFirestore.collection('dummy').doc().id;
+        final now = DateTime.now().toIso8601String();
+
+        // 신청 내역 데이터 생성
+        final applicationData = {
+          'applicationId': applicationId,
+          ...feedData,
+          'feedId': feedId,
+          'appliedAt': now,
+          'status': 'pending',
+        };
+
+        // 새로운 신청 내역을 배열의 맨 앞에 추가
+        existingApplications.insert(0, applicationData);
+
+        // 트랜잭션으로 업데이트
+        transaction.set(
+            userDocRef,
+            {
+              'teamApplicationHistory': existingApplications,
+            },
+            SetOptions(merge: true));
+
+        return true;
       });
-
-      print('✅ DataSource: 팀 신청 데이터 저장 완료');
-      return true;
-    } catch (e, s) {
-      print('❌ applyToTeam error: $e');
-      print('❌ applyToTeam stack: $s');
+    } catch (e) {
       return false;
     }
   }
