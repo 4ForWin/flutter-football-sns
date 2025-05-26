@@ -1,6 +1,7 @@
 import 'package:mercenaryhub/domain/entity/time_state.dart';
 
 class MyMercenaryInvitationHistoryDto {
+  final String? invitationId; // 고유 ID 추가
   final String name;
   final String uid;
   final String feedId;
@@ -14,6 +15,7 @@ class MyMercenaryInvitationHistoryDto {
   final String status;
 
   MyMercenaryInvitationHistoryDto({
+    this.invitationId, // nullable로 설정 (기존 데이터 호환성)
     required this.name,
     required this.uid,
     required this.cost,
@@ -29,6 +31,7 @@ class MyMercenaryInvitationHistoryDto {
 
   factory MyMercenaryInvitationHistoryDto.fromJson(Map<String, dynamic> json) {
     return MyMercenaryInvitationHistoryDto(
+      invitationId: json['invitationId'], // nullable이므로 null일 수 있음
       name: json['name'],
       uid: json['uid'],
       cost: json['cost'],
@@ -45,6 +48,7 @@ class MyMercenaryInvitationHistoryDto {
 
   Map<String, dynamic> toJson() {
     return {
+      if (invitationId != null) 'invitationId': invitationId,
       'name': name,
       'uid': uid,
       'cost': cost,

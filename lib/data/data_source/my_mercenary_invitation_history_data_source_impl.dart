@@ -15,11 +15,8 @@ class MyMercenaryInvitationHistoryDataSourceImpl
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        print('❌ 로그인된 사용자가 없습니다.');
         return [];
       }
-
-      print('🥰 DataSource: 사용자 ${currentUser.uid}의 초대 내역 조회 시작');
 
       final userDoc = await _firebaseFirestore
           .collection('users')
@@ -27,8 +24,6 @@ class MyMercenaryInvitationHistoryDataSourceImpl
           .get();
 
       if (!userDoc.exists) {
-        print('❌ 사용자 문서가 존재하지 않습니다.');
-
         // 사용자 문서가 없으면 빈 배열로 초기화
         await _firebaseFirestore.collection('users').doc(currentUser.uid).set({
           'mercenaryInvitationHistory': [],
@@ -41,20 +36,15 @@ class MyMercenaryInvitationHistoryDataSourceImpl
       final invitationList =
           userData['mercenaryInvitationHistory'] as List<dynamic>? ?? [];
 
-      print('🥰 DataSource: ${invitationList.length}개의 초대 내역 발견');
-
       if (invitationList.isEmpty) {
         return [];
       }
 
       return invitationList.map((feedMap) {
         final map = Map<String, dynamic>.from(feedMap);
-        print('🥰 DataSource: 초대 내역 데이터: ${map['name']} - ${map['status']}');
         return MyMercenaryInvitationHistoryDto.fromJson(map);
       }).toList();
     } catch (e, s) {
-      print('❌ fetchInvitationHistories error: $e');
-      print('❌ fetchInvitationHistories stack: $s');
       return [];
     }
   }
@@ -64,11 +54,8 @@ class MyMercenaryInvitationHistoryDataSourceImpl
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        print('❌ 로그인된 사용자가 없습니다.');
         return false;
       }
-
-      print('🥰 DataSource: feedId $feedId로 용병 초대 시작');
 
       // 용병 피드 정보 가져오기
       final feedDoc = await _firebaseFirestore
@@ -77,22 +64,23 @@ class MyMercenaryInvitationHistoryDataSourceImpl
           .get();
 
       if (!feedDoc.exists) {
-        print('❌ 피드가 존재하지 않습니다: $feedId');
         return false;
       }
 
       final feedData = feedDoc.data()!;
-      print('🥰 DataSource: 피드 데이터 조회 완료 - 용병명: ${feedData['name']}');
+
+      // 고유한 초대 ID 생성
+      final invitationId = _firebaseFirestore.collection('dummy').doc().id;
+      final now = DateTime.now().toIso8601String();
 
       // 초대 내역 데이터 생성
       final invitationData = {
+        'invitationId': invitationId, // 고유 ID 추가
         ...feedData,
         'feedId': feedId,
-        'appliedAt': DateTime.now().toIso8601String(),
+        'appliedAt': now,
         'status': 'pending',
       };
-
-      print('🥰 DataSource: 초대 데이터 생성 완료');
 
       // users 컬렉션에 추가
       final userDocRef =
@@ -103,16 +91,29 @@ class MyMercenaryInvitationHistoryDataSourceImpl
         'mercenaryInvitationHistory': [],
       }, SetOptions(merge: true));
 
-      // 초대 내역 추가
+      // 기존 초대 내역 확인 (중복 방지)
+      final userDoc = await userDocRef.get();
+      final existingInvitations = List<Map<String, dynamic>>.from(
+          userDoc.data()?['mercenaryInvitationHistory'] ?? []);
+
+      // 동일한 feedId로 pending 상태의 초대가 있는지 확인
+      final hasPendingInvitation = existingInvitations.any((invitation) =>
+          invitation['feedId'] == feedId && invitation['status'] == 'pending');
+
+      if (hasPendingInvitation) {
+        return false; // 이미 초대한 경우
+      }
+
+      // 새로운 초대 내역을 배열의 맨 앞에 추가 (최신순 정렬)
+      existingInvitations.insert(0, invitationData);
+
+      // 업데이트
       await userDocRef.update({
-        'mercenaryInvitationHistory': FieldValue.arrayUnion([invitationData])
+        'mercenaryInvitationHistory': existingInvitations,
       });
 
-      print('✅ DataSource: 용병 초대 데이터 저장 완료');
       return true;
     } catch (e, s) {
-      print('❌ inviteToMercenary error: $e');
-      print('❌ inviteToMercenary stack: $s');
       return false;
     }
   }
