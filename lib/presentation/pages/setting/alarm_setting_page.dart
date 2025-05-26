@@ -42,8 +42,8 @@ class AlarmSettingPage extends ConsumerWidget {
                 fontSize: 16,
               ),
             ),
-            value: state.isSignalOn,
-            onChanged: notifier.toggleSignal,
+            value: state.isPushOn,
+            onChanged: notifier.togglePush,
             activeColor: const Color(0xFF2BBB7D),
           ),
           SwitchListTile(
