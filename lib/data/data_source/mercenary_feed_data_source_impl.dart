@@ -18,8 +18,7 @@ class MercenaryFeedDataSourceImpl implements MercenaryFeedDataSource {
     try {
       var collectionQuery = _firestoreInstance
           .collection('mercenaryFeeds')
-          // TODO: 나중에 본인 uid 아닌 것들을 가져오기
-          // .where('uid', whereNotIn: [uid])
+          .where('uid', whereNotIn: [FirebaseAuth.instance.currentUser?.uid])
           .where('location', isEqualTo: location)
           .orderBy('createAt', descending: true);
 
