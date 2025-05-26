@@ -40,21 +40,25 @@ class SettingPage extends ConsumerWidget {
 
           SettingTile(
             title: '내가 신청한 팀',
+            subtitle: '팀에 지원한 내역 (취소만 가능)',
             icon: Icons.send,
             onTap: () => viewModel.navigateToTeamApplyHistory(context),
           ),
           SettingTile(
             title: '나를 초대한 팀',
+            subtitle: '팀에서 받은 초대 (수락/거절 가능)',
             icon: Icons.inbox,
             onTap: () => viewModel.navigateToTeamInvitationHistory(context),
           ),
           SettingTile(
             title: '내가 초대한 용병',
+            subtitle: '용병에게 보낸 초대 (취소만 가능)',
             icon: Icons.person_add,
             onTap: () => viewModel.navigateToMercenaryApplyHistory(context),
           ),
           SettingTile(
             title: '팀에 지원한 용병',
+            subtitle: '용병 지원자 관리 (수락/거절 가능)',
             icon: Icons.people,
             onTap: () => viewModel.navigateToMercenaryApplicants(context),
           ),
