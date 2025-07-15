@@ -10,6 +10,15 @@
 
 ---
 
+## 📄 역할 분담
+
+- 문준호: 스플래쉬, 로그인, 이용 약관, FCM 알림(예정)
+- 양준석: 레벨테스트, 모집 분야
+- 이현진: 피드 작성, 피드 불러오기, 틴더 스와이프, 신청 및 스킵
+- 유제형: 마이페이지(로그아웃, 팀/용병 신청내역 등)
+
+---
+
 ## 👨‍🏫 프로젝트 소개
 
 - 풋살은 하고 싶지만 팀이 없는 용병, 갑자기 풋살이 하고 싶은 풋살러
@@ -46,6 +55,13 @@
 ### 3️⃣ 위치기반 매칭
 
 - 현위치에 따라 같은 위치에서 일어나는 모집글을 볼 수 있음
+
+| <img alt="스플래쉬" src="https://github.com/user-attachments/assets/339bf485-59ae-4835-a8d9-3cd9daa55fcd" />  | <img alt="로그인" src="https://github.com/user-attachments/assets/7db250c3-36f2-49e4-8b15-02176f76740e" /> | <img alt="약관동의" src="https://github.com/user-attachments/assets/7aa80368-5c65-4374-b1c2-379750420571" />|
+|-------------------------------------|-------------------------------------|-------------------------------------|
+| <img width="1080" height="2400" alt="레벨테스트" src="https://github.com/user-attachments/assets/1ebbff80-9c00-4cf6-a53e-345c0f28c0b2" /> | <img width="1080" height="2400" alt="모집분야" src="https://github.com/user-attachments/assets/86b50bc4-9600-487e-8bb4-b05e1da018d9" /> |  |
+| <img width="1080" height="2400" alt="홈" src="https://github.com/user-attachments/assets/a69ba4d1-a1c8-40ec-a775-d208b90b93b2" />|  <img width="1080" height="2400" alt="신청 스와이프" src="https://github.com/user-attachments/assets/6d748174-1e7e-4717-8373-e3d0f1593952" /> | <img width="1080" height="2400" alt="스킵 스와이프" src="https://github.com/user-attachments/assets/51834893-7679-4895-97b4-e3a4674d917c" /> |
+|  <img width="1080" height="2400" alt="Screenshot_1752593638" src="https://github.com/user-attachments/assets/7db9f2b1-59ea-44d1-92ec-e1231b1506da" /> | <img width="1080" height="2400" alt="Screenshot_1752593642" src="https://github.com/user-attachments/assets/9b2a96fd-3e96-49fb-9acd-3ee8bea155b8" /> |   |
+| <img width="1080" height="2400" alt="Screenshot_1752593720" src="https://github.com/user-attachments/assets/a41e954a-f8c3-4c1a-a09b-46c688a1c490" /> | <img width="1080" height="2400" alt="Screenshot_1752593728" src="https://github.com/user-attachments/assets/cebfb8a6-8e79-4246-bae6-010b026766ed" /> | <img width="1080" height="2400" alt="Screenshot_1752593736" src="https://github.com/user-attachments/assets/6afc15a9-8e62-48a3-b649-e7abbb967c41" /> |
 
 ---
 
