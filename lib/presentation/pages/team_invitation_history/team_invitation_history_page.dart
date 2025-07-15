@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/team_invitation_history/team_invitation_history_item.dart';
-import 'package:mercenaryhub/presentation/pages/team_invitation_history/team_invitation_history_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/team_invitation_history/widgets/team_invitation_history_item.dart';
+import 'package:mercenaryhub/presentation/pages/team_invitation_history/view_models/team_invitation_history_view_model.dart';
 
 class TeamInvitationHistoryPage extends ConsumerWidget {
   const TeamInvitationHistoryPage({super.key});

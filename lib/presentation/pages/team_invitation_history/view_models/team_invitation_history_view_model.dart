@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/domain/entity/team_invitation_received.dart';
-import 'package:mercenaryhub/presentation/pages/providers.dart';
+import 'package:mercenaryhub/providers/feed_providers.dart';
 
 class TeamInvitationHistoryViewModel
     extends AsyncNotifier<List<TeamInvitationReceived>> {

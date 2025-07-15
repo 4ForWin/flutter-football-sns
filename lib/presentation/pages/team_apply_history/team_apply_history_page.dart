@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/team_apply_history/team_apply_history_item.dart';
-import 'package:mercenaryhub/presentation/pages/team_apply_history/team_apply_history_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/team_apply_history/widgets/team_apply_history_item.dart';
+import 'package:mercenaryhub/presentation/pages/team_apply_history/view_models/team_apply_history_view_model.dart';
 
 class TeamApplyHistoryPage extends ConsumerWidget {
   const TeamApplyHistoryPage({super.key});

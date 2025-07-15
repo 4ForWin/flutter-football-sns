@@ -1,39 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/domain/entity/team_feed.dart';
 import 'package:mercenaryhub/domain/entity/team_feed_log.dart';
-import 'package:mercenaryhub/presentation/pages/providers.dart';
-
-class TeamFeedState {
-  bool isLoading;
-  bool isLast;
-  List<TeamFeed> feedList;
-
-  TeamFeedState({
-    required this.isLoading,
-    required this.isLast,
-    required this.feedList,
-  });
-
-  TeamFeedState copyWith({
-    bool? isLoading,
-    bool? isLast,
-    List<TeamFeed>? feedList,
-  }) {
-    return TeamFeedState(
-      isLoading: isLoading ?? this.isLoading,
-      isLast: isLast ?? this.isLast,
-      feedList: feedList ?? this.feedList,
-    );
-  }
-}
+import 'package:mercenaryhub/presentation/pages/home/models/team_feed_state.dart';
+import 'package:mercenaryhub/providers/feed_providers.dart';
 
 class TeamFeedViewModel extends Notifier<TeamFeedState> {
   @override
   build() {
-    print('TeamFeedViewModel build');
-    // streamFetchFeeds();
-    // fetchFeeds();
     initialize();
     return TeamFeedState(
       isLoading: true,

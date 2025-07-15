@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_item.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/mercenary_apply_history_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/widgets/mercenary_apply_history_item.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_apply_history/view_models/mercenary_apply_history_view_model.dart';
 
 class MercenaryApplyHistoryPage extends ConsumerWidget {
   const MercenaryApplyHistoryPage({super.key});

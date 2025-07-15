@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'widget/profile_section.dart';
 import 'widget/setting_tile.dart';
-import 'viewmodel/setting_view_model.dart';
+import 'view_models/setting_view_model.dart';
 
 class SettingPage extends ConsumerWidget {
   const SettingPage({super.key});

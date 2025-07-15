@@ -62,7 +62,6 @@ import 'package:mercenaryhub/domain/usecase/upload_image_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_team_apply_histories_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/update_team_apply_status_usecase.dart';
 import 'package:mercenaryhub/domain/usecase/fetch_application_histories_usecase.dart';
-import 'package:mercenaryhub/domain/usecase/cancel_mercenary_apply_usecase.dart';
 import 'package:mercenaryhub/data/data_source/mercenary_applicants_data_source.dart';
 import 'package:mercenaryhub/data/data_source/mercenary_applicants_data_source_impl.dart';
 import 'package:mercenaryhub/data/repository/mercenary_applicants_repository_impl.dart';

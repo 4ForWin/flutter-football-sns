@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/setting/viewmodel/alarm_setting_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/setting/view_models/alarm_setting_view_model.dart';
 
 class AlarmSettingPage extends ConsumerWidget {
   const AlarmSettingPage({super.key});

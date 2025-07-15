@@ -2,7 +2,7 @@ import 'dart:core';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/domain/entity/team_apply_history.dart';
-import 'package:mercenaryhub/presentation/pages/providers.dart';
+import 'package:mercenaryhub/providers/feed_providers.dart';
 
 class MercenaryApplicantsViewModel
     extends AsyncNotifier<List<TeamApplyHistory>> {
@@ -30,7 +30,7 @@ class MercenaryApplicantsViewModel
       applicants.sort((a, b) => b.appliedAt.compareTo(a.appliedAt));
 
       return applicants;
-    } catch (e, stackTrace) {
+    } catch (e) {
       return [];
     }
   }

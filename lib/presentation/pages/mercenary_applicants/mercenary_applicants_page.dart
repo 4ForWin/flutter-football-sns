@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicant_item.dart';
-import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicants_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/widgets/mercenary_applicant_item.dart';
+import 'package:mercenaryhub/presentation/pages/mercenary_applicants/view_models/mercenary_applicants_view_model.dart';
 
 class MercenaryApplicantsPage extends ConsumerWidget {
   const MercenaryApplicantsPage({super.key});
