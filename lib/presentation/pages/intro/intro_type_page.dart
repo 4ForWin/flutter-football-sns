@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/home_bottom_navigation_bar_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/intro/widgets/progress_bar.dart';
 import 'package:mercenaryhub/presentation/pages/intro/widgets/text_label.dart';
 
-class IntroTypePage extends StatefulWidget {
+class IntroTypePage extends ConsumerStatefulWidget {
   String level;
   IntroTypePage(this.level, {super.key});
   @override
-  State<IntroTypePage> createState() => _IntroTypePageState();
+  ConsumerState<IntroTypePage> createState() => _IntroTypePageState();
 }
 
-class _IntroTypePageState extends State<IntroTypePage> {
+class _IntroTypePageState extends ConsumerState<IntroTypePage> {
   String? type;
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class _IntroTypePageState extends State<IntroTypePage> {
             getTypeBox('findingTeam'),
             Spacer(),
             getSubmitButton(),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -98,6 +101,9 @@ class _IntroTypePageState extends State<IntroTypePage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
+          final homeBottomVm =
+              ref.read(homeBottomNavigationBarViewModelProvider.notifier);
+
           if (type == null) {
             showDialog(
               context: context,
@@ -117,9 +123,17 @@ class _IntroTypePageState extends State<IntroTypePage> {
               },
             );
           } else if (type == 'recruitingPlayer') {
+            homeBottomVm.onIndexChanged(1);
+
             // 용병찾기 페이지로 이동
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
           } else {
+            homeBottomVm.onIndexChanged(0);
+
             // 팀 찾기 페이지로 이동
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
           }
         },
         style: ElevatedButton.styleFrom(

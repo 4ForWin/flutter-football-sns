@@ -6,6 +6,8 @@ import 'package:mercenaryhub/presentation/pages/intro/widgets/progress_bar.dart'
 import 'package:mercenaryhub/presentation/pages/intro/widgets/text_label.dart';
 
 class IntroLevelPage extends ConsumerWidget {
+  const IntroLevelPage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -29,6 +31,7 @@ class IntroLevelPage extends ConsumerWidget {
             getLevelBox(ref, 'pro', '프로 - 프로선수 경험이 있어요'),
             Spacer(),
             getSubmitButton(ref, context),
+            SizedBox(height: 16),
           ],
         ),
       ),
@@ -107,17 +110,20 @@ class IntroLevelPage extends ConsumerWidget {
           ),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextLabel(text: text, type: 'body'),
-            Icon(
-              Icons.check_circle,
-              color: state.futsalLevel == chosenLevel
-                  ? Color(0xFF2BBB7D)
-                  : Colors.white,
-            ),
-          ],
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextLabel(text: text, type: 'body'),
+              Icon(
+                Icons.check_circle,
+                color: state.futsalLevel == chosenLevel
+                    ? Color(0xFF2BBB7D)
+                    : Colors.white,
+              ),
+            ],
+          ),
         ),
       ),
     );
