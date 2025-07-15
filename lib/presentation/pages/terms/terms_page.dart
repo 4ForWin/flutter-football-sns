@@ -8,7 +8,8 @@ class TermsOfServiceAgreement extends StatefulWidget {
   const TermsOfServiceAgreement({super.key});
 
   @override
-  State<TermsOfServiceAgreement> createState() => _TermsOfServiceAgreementState();
+  State<TermsOfServiceAgreement> createState() =>
+      _TermsOfServiceAgreementState();
 }
 
 class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
@@ -50,7 +51,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('agreed_terms', true);
-    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/intro_level', (route) => false);
   }
 
   Future<bool> _requestLocationPermission() async {
@@ -81,7 +83,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
+          icon:
+              const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
         ),
       ),
       body: Padding(
@@ -126,7 +129,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
     ];
 
     List<Widget> list = [
-      renderContainer(_isChecked[0], labels[0], () => _updateCheckState(0), isHeader: true),
+      renderContainer(_isChecked[0], labels[0], () => _updateCheckState(0),
+          isHeader: true),
       const SizedBox(height: 8),
     ];
 
@@ -160,7 +164,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
             color: isHeader ? const Color(0xFFEEEEEE) : Colors.transparent,
             width: isHeader ? 1.5 : 0.0,
           ),
-          borderRadius: isHeader ? BorderRadius.circular(12.0) : BorderRadius.zero,
+          borderRadius:
+              isHeader ? BorderRadius.circular(12.0) : BorderRadius.zero,
         ),
         child: Row(
           children: [
@@ -190,7 +195,8 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
                 ),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
+            const Icon(Icons.arrow_forward_ios_rounded,
+                size: 14, color: Colors.grey),
             if (!isHeader && index != null)
               GestureDetector(
                 onTap: () {

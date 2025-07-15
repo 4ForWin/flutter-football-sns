@@ -9,6 +9,7 @@ import 'package:mercenaryhub/core/notification_service/notification_service.dart
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import 'package:mercenaryhub/firebase_options.dart';
 import 'package:mercenaryhub/presentation/pages/home/home_page.dart';
+import 'package:mercenaryhub/presentation/pages/intro/intro_level_page.dart';
 import 'package:mercenaryhub/presentation/pages/mercenary_applicants/mercenary_applicants_page.dart';
 import 'package:mercenaryhub/presentation/pages/splash/splash_page.dart';
 import 'package:mercenaryhub/presentation/pages/setting/setting_page.dart';
@@ -53,6 +54,7 @@ class MainApp extends StatelessWidget {
         '/terms': (context) => const TermsOfServiceAgreement(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginView(),
+        '/intro_level': (context) => const IntroLevelPage(),
       },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
