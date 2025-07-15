@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/view_models/write_view_model.dart';
 
 class ImageViewer extends StatelessWidget {
   @override

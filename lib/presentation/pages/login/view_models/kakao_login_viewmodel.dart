@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
-import '../../../../domain/usecases/login_with_kakao.dart';
+import '../../../../domain/usecase/login_with_kakao.dart';
 
 class KakaoLoginViewModel extends ChangeNotifier {
   final LoginWithKakao loginUseCase;

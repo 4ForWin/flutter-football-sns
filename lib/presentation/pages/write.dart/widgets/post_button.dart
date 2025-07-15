@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/loading_bar.dart';
-import 'package:mercenaryhub/presentation/pages/write.dart/write_view_model.dart';
+import 'package:mercenaryhub/presentation/pages/write.dart/view_models/write_view_model.dart';
 
 class PostButton extends StatelessWidget {
   final BuildContext homeContext;

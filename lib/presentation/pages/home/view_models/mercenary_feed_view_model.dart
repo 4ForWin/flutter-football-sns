@@ -1,39 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mercenaryhub/domain/entity/mercenary_feed.dart';
 import 'package:mercenaryhub/domain/entity/mercenary_feed_log.dart';
-import 'package:mercenaryhub/presentation/pages/providers.dart';
-
-class MercenaryFeedState {
-  bool isLoading;
-  bool isLast;
-  List<MercenaryFeed> feedList;
-
-  MercenaryFeedState({
-    required this.isLoading,
-    required this.isLast,
-    required this.feedList,
-  });
-
-  MercenaryFeedState copyWith({
-    bool? isLoading,
-    bool? isLast,
-    List<MercenaryFeed>? feedList,
-  }) {
-    return MercenaryFeedState(
-      isLoading: isLoading ?? this.isLoading,
-      isLast: isLast ?? this.isLast,
-      feedList: feedList ?? this.feedList,
-    );
-  }
-}
+import 'package:mercenaryhub/presentation/pages/home/models/mercenary_feed_state.dart';
+import 'package:mercenaryhub/providers/feed_providers.dart';
 
 class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
   @override
   build() {
-    print('✅MercenaryFeedViewModel build');
-    // streamFetchFeeds();
-    // fetchFeeds();
     initialize();
     return MercenaryFeedState(
       isLoading: true,
@@ -74,9 +47,6 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
   }
 
   void fetchMercenaryFeeds() async {
-    print('✅FeedViewModel fetchFeeds');
-    // if (_isLast) return;
-
     final fetchMercenaryFeedsUsecase =
         ref.read(fetchMercenaryFeedsUsecaseProvider);
     final feedIds = _feedLog?.map((e) => e.feedId).toList() ?? [];
@@ -105,7 +75,6 @@ class MercenaryFeedViewModel extends Notifier<MercenaryFeedState> {
   }
 
   void streamFetchMercenaryFeeds() {
-    print('✅MercenaryFeedViewModel streamFetchMercenaryFeeds');
     final streamFetchMercenaryFeedsUsecase =
         ref.read(streamFetchMercenaryFeedsUsecaseProvider);
     final streamFeedList = streamFetchMercenaryFeedsUsecase.execute();

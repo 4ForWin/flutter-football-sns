@@ -44,7 +44,7 @@ class MyMercenaryInvitationHistoryDataSourceImpl
         final map = Map<String, dynamic>.from(feedMap);
         return MyMercenaryInvitationHistoryDto.fromJson(map);
       }).toList();
-    } catch (e, s) {
+    } catch (e) {
       return [];
     }
   }
@@ -113,7 +113,7 @@ class MyMercenaryInvitationHistoryDataSourceImpl
       });
 
       return true;
-    } catch (e, s) {
+    } catch (e) {
       return false;
     }
   }

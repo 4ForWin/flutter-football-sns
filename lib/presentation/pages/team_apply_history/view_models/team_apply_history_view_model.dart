@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mercenaryhub/domain/entity/my_team_application_history.dart';
-import 'package:mercenaryhub/presentation/pages/providers.dart';
+import 'package:mercenaryhub/providers/feed_providers.dart';
 import 'package:mercenaryhub/core/services/application_status_service.dart';
 
 class TeamApplyHistoryViewModel
