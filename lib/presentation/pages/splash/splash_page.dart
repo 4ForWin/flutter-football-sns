@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
+import 'package:mercenaryhub/presentation/pages/home/view_models/home_bottom_navigation_bar_view_model.dart';
 import 'package:mercenaryhub/presentation/pages/login/login_view.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  ConsumerState<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends ConsumerState<SplashPage> {
   @override
   void initState() {
     super.initState();
@@ -25,10 +27,20 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> checkLoginStatus() async {
     final user = FirebaseAuth.instance.currentUser;
     final prefs = SharedPrefs.instance;
-    final bool? isLogined = prefs.getBool('isLogined');
+    final homeBottomVm =
+        ref.read(homeBottomNavigationBarViewModelProvider.notifier);
+    final bool agreedTerms = prefs.getBool('agreed_terms') ?? false;
+    final int homeIndex = prefs.getInt('home_index') ?? 0;
+
     try {
-      if (user != null && isLogined!) {
-        Navigator.pushNamedAndRemoveUntil(context, '/terms', (route) => false);
+      if (user != null) {
+        if (agreedTerms) {
+          homeBottomVm.onIndexChanged(homeIndex);
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/terms', (route) => false);
+        }
       } else {
         Navigator.pushReplacement(
           context,

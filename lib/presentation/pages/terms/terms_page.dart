@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mercenaryhub/core/shared_prefs/shared_prefs.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:mercenaryhub/presentation/pages/terms/widget/terms_button_widget.dart';
@@ -49,7 +49,7 @@ class _TermsOfServiceAgreementState extends State<TermsOfServiceAgreement> {
       return;
     }
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = SharedPrefs.instance;
     await prefs.setBool('agreed_terms', true);
     Navigator.pushNamedAndRemoveUntil(
         context, '/intro_level', (route) => false);

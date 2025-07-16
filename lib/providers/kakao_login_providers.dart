@@ -17,4 +17,4 @@ final kakaoAuthRepositoryProvider = Provider<KakaoAuthRepository>((ref) =>
 final loginWithKakaoUseCaseProvider =
     Provider((ref) => LoginWithKakao(ref.read(kakaoAuthRepositoryProvider)));
 final kakaoLoginViewModelProvider = ChangeNotifierProvider(
-    (ref) => KakaoLoginViewModel(ref.read(loginWithKakaoUseCaseProvider)));
+    (ref) => KakaoLoginViewModel(ref, ref.read(loginWithKakaoUseCaseProvider)));
