@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeBottomNavigationBarViewModel extends AutoDisposeNotifier<int> {
+class HomeBottomNavigationBarViewModel extends Notifier<int> {
   @override
   build() {
     return 0;
@@ -12,7 +12,7 @@ class HomeBottomNavigationBarViewModel extends AutoDisposeNotifier<int> {
 }
 
 final homeBottomNavigationBarViewModelProvider =
-    NotifierProvider.autoDispose<HomeBottomNavigationBarViewModel, int>(
+    NotifierProvider<HomeBottomNavigationBarViewModel, int>(
   () {
     return HomeBottomNavigationBarViewModel();
   },
